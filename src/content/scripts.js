@@ -4,7 +4,7 @@ import { $, getSelected, scriptRules } from '../utils';
   const { hostname: domain, pathname: path, search: query, hash } = location;
   let rule = (await scriptRules.match(domain + path + query + hash)) || {};
 
-  if (!rule) {
+  if (!rule || !rule.enable) {
     return;
   }
 

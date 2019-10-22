@@ -1,11 +1,12 @@
 <template>
-  <div class="content-box" :data-match="isMatch" :data-status="status">
+  <div class="content-box" :data-match="isMatch" :data-enable="enable">
     <button v-show="!status" class="btn custom" @click="setStatus(1)">custom</button>
     <div v-show="!!status">
       <button class="btn" :class="{err: nameError}" @click="save">save</button>
       <div data-for="customScript">
-        <div class="customScriptDomain-tips">
+        <div class="domain-tips">
           <textarea v-model="name" class="input domain" :class="{err: nameError}" placeholder="preg." spellcheck="false" rows="1"></textarea>
+          <input class="checkbox-enable" type="checkbox" :checked="enable" @change="setEnable" />
         </div>
         <div ref="styleEditor" class="editor editor-style input"></div>
         <div ref="scriptEditor" class="editor editor-script input"></div>
@@ -21,7 +22,8 @@ export default {
     return {
       isMatch: false,
       name: null,
-      status: 0
+      status: 0,
+      enable: true
     }
   },
   watch: {
@@ -41,6 +43,7 @@ export default {
     this.rule = (await scriptRules.match(this.validUrl)) || {}
     this.isMatch = this.rule.name
     this.name = this.rule.name || domain + path
+    this.enable = this.rule.name ? !!this.rule.enable : true
 
     await this.initEditor(this.rule)
   },
@@ -59,6 +62,9 @@ export default {
     setStatus(value) {
       this.status = value
     },
+    setEnable(e) {
+      this.enable = e.target.checked
+    },
     save() {
       const styleValue = this.styleEditor.getValue()
       const scriptValue = this.scriptEditor.getValue()
@@ -70,7 +76,7 @@ export default {
       }
       // 没有原来而且没有填内容的话就不保存
       else if (!this.rule.name && !styleValue && !scriptValue) {
-          return
+        return
       }
       // 保存
       else {
@@ -79,7 +85,8 @@ export default {
         }
         scriptRules.set(this.name, {
           styles: styleValue,
-          scripts: scriptValue
+          scripts: scriptValue,
+          enable: this.enable
         })
       }
       this.status = 0
@@ -115,8 +122,11 @@ export default {
   margin: 4px 0 0;
 }
 
-[data-match] .btn.custom {
+.content-box[data-match] .btn.custom {
   background: #e7ffed;
+}
+.content-box:not([data-enable]) {
+  filter: brightness(0.95);
 }
 .editor-style:after {
   content: 'CSS';
@@ -144,15 +154,26 @@ export default {
 .editor:hover:after {
   opacity: 0;
 }
-.customScriptDomain-tips:before {
+.domain-tips {
+  position: relative;
+}
+.domain-tips:before {
   content: 'pattern';
   position: absolute;
   line-height: 30px;
   color: #bbb;
   margin: 0 6px;
 }
+.checkbox-enable {
+  position: absolute;
+  right: 0;
+  top: 5px;
+  width: auto;
+  transform: scale(1.5);
+}
 .input.domain {
   padding-left: 50px;
+  width: calc(100% - 25px);
 }
 .input.err {
   border-color: #ff6232;

@@ -64,12 +64,12 @@ class ScriptRule {
       chrome.storage.sync.get('scriptRules', rs => res((rs && rs.scriptRules) || []));
     });
   }
-  async set(ruleName, { styles, scripts }) {
+  async set(ruleName, { styles, scripts, enable = true }) {
     if (!ruleName) {
       return;
     }
     let rules = await this.getAllRules();
-    rules[ruleName] = { styles, scripts, name: ruleName };
+    rules[ruleName] = { enable, styles, scripts, name: ruleName };
     chrome.storage.sync.set({ scriptRules: rules });
   }
   async get(ruleName) {
