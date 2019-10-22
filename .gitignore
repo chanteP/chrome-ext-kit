@@ -8,3 +8,5 @@ lib/ace/*
 !lib/ace/theme-monokai.js
 !lib/ace/mode-css.js
 !lib/ace/mode-javascript.js
+!lib/ace/worker-css.js
+!lib/ace/worker-javascript.js
