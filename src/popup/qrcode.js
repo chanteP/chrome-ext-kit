@@ -16,6 +16,7 @@ insertTemplate(`
     #canvas {
       display: block;
       width: 200px;
+      flex-basis: 200px;
     }
     #canvasInput{
       flex: 1;
