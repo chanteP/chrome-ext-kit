@@ -1,0 +1,44 @@
+{
+  "name": "np-custom-chrome-ext",
+  "version": "0.1.0",
+  "manifest_version": 2,
+  "description": "",
+  "browser_action": {
+    "default_icon": "/images/icon.png",
+    "default_popup": "/dist/popup.html",
+    "default_title": ""
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["/dist/content.js"],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  "icons": {
+    "16": "/images/icon.png",
+    "48": "/images/icon.png",
+    "128": "/images/icon.png"
+  },
+  "minimum_chrome_version": "72",
+  "background": {
+    "scripts": []
+  },
+  "options_ui": {
+    "page": "/dist/options.html",
+    "chrome_style": true
+  },
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "permissions": [
+    "contextMenus",
+    "bookmarks",
+    "webRequest",
+    "webRequestBlocking",
+    "storage",
+    "tabs",
+    "*://*/",
+    "*://*/*"
+  ],
+  "web_accessible_resources": []
+}
