@@ -33,7 +33,14 @@ export default {
   },
   computed: {
     nameError() {
-      return this.name && !scriptRules.toPreg(this.name).test(this.validUrl)
+      let valid = true;
+      try{
+        valid = scriptRules.toPreg(this.name).test(this.validUrl);
+      }catch(e){
+        console.error(e);
+        valid = false;
+      }
+      return this.name && !valid;
     }
   },
   async created() {
