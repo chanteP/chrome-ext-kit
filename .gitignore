@@ -10,3 +10,7 @@ lib/ace/*
 !lib/ace/mode-javascript.js
 !lib/ace/worker-css.js
 !lib/ace/worker-javascript.js
+
+package/package/*
+package/*.pem
+temp
