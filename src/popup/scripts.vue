@@ -77,7 +77,7 @@ export default {
       const scriptValue = this.scriptEditor.getValue()
       // 如果preg不设置&没有原来的话那就删除
       if (this.rule.name && !this.name) {
-        scriptRules.remove(rule.name)
+        scriptRules.remove(this.rule.name)
         this.rule = {}
         this.isMatch = false
       }

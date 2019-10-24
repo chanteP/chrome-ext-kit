@@ -56,12 +56,12 @@ class ScriptRule {
   }
   parseUrl(url) {
     let [match, scheme, domain, path, query, hash] =
-      /^([\w]*\:\/\/)([^\/]*)([^\?\#]*)(\?[\s\S]*)?(\#[\s\S]*)?$/.exec(url) || [];
+      /^([^\:]*\:\/\/)([^\/]*)([^\?\#]*)(\?[\s\S]*)?(\#[\s\S]*)?$/.exec(url) || [];
     return { scheme, domain, path, query, hash };
   }
   async getAllRules() {
     return new Promise(res => {
-      chrome.storage.sync.get('scriptRules', rs => res((rs && rs.scriptRules) || []));
+      chrome.storage.sync.get('scriptRules', rs => res((rs && rs.scriptRules) || {}));
     });
   }
   async set(ruleName, { styles, scripts, enable = true }) {
@@ -69,6 +69,7 @@ class ScriptRule {
       return;
     }
     let rules = await this.getAllRules();
+
     rules[ruleName] = { enable, styles, scripts, name: ruleName };
     chrome.storage.sync.set({ scriptRules: rules });
   }
