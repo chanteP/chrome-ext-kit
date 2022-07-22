@@ -12,7 +12,6 @@ mkdir -p ./package/package/
 if [ "$env" = 'production' ]; then
 
   cp -r ./dist/ ./package/package/dist
-  cp -r ./lib/ ./package/package/lib
   cp -r ./images/ ./package/package/images
   cp manifest.json ./package/package/
 

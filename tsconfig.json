@@ -16,10 +16,9 @@
         "lib": ["ESNext", "DOM"],
 
         "paths": {
-            "@/*": ["./src/*"]
         },
 
-        "types": ["chrome"],
+        "types": ["chrome", "ace"],
 
         // ----------------------------
 

@@ -1,4 +1,5 @@
-import { $, getSelected, scriptRules } from '../utils';
+import { $, getSelected } from '../utils';
+import { scriptRules } from '../utils/scriptRule';
 
 (async (_) => {
     const { hostname: domain, pathname: path, search: query, hash } = location;

@@ -1,140 +1,152 @@
 <template>
-    <div class="content-box" :data-match="isMatch" :data-enable="enable">
-        <button v-show="!status" class="btn custom" @click="setStatus(1)">custom</button>
-        <div v-show="!!status">
-            <button class="btn" :class="{err: nameError}" @click="save">save</button>
-            <div data-for="customScript">
-                <div class="domain-tips">
-                    <textarea v-model="name" class="input domain" :class="{err: nameError}" placeholder="preg." spellcheck="false" rows="1"></textarea>
-                    <input class="checkbox-enable" type="checkbox" :checked="enable" @change="setEnable" />
-                </div>
-                <div ref="styleEditor" class="editor editor-style input"></div>
-                <div ref="scriptEditor" class="editor editor-script input"></div>
-            </div>
+    <NCollapseItem title="脚本">
+        <template #header-extra>
+            <NTag v-if="!isMatch" size="small"> 无适用 </NTag>
+            <NTag v-else-if="rule!.enable" type="success" size="small"> 适用中 </NTag>
+            <NTag v-else type="warning" size="small"> 禁用中 </NTag>
+        </template>
+        <div class="flexbox">
+            <NButton class="flex" :type="!nameError ? 'primary' : 'error'" block secondary @click="save">save</NButton>
+
+            <NPopover
+                placement="bottom"
+                trigger="click"
+                v-model:show="allRulesPopupShow"
+                @update:show="handleAllRulesPopupShow"
+            >
+                <template #trigger>
+                    <NButton class="ml-4" type="info" strong secondary @click="copyConfig">
+                        <template #icon>
+                            <NIcon><SaveAltOutlined /></NIcon>
+                        </template>
+                    </NButton>
+                </template>
+                <NButton type="info" block secondary @click="saveAllRules">saveAll</NButton>
+                <NInput class="mt-4" v-model:value="allRules" type="textarea" placeholder="no rules" />
+            </NPopover>
         </div>
-    </div>
+        <div class="flexbox mt-4">
+            <NInput
+                v-model:value="name"
+                class="flex"
+                size="small"
+                :status="nameError ? 'error' : 'success'"
+                placeholder="preg."
+                spellcheck="false"
+                rows="1"
+            >
+            </NInput>
+            <NSwitch class="switch ml-4" v-model:value="enable" size="large" :round="false">
+                <template #checked>on</template>
+                <template #unchecked>off</template>
+            </NSwitch>
+        </div>
+        <v-ace-editor
+            class="editor editor-style"
+            v-model:value="styleString"
+            lang="css"
+            theme="chrome"
+        />
+        <v-ace-editor
+            class="editor editor-script"
+            v-model:value="scriptString"
+            lang="js"
+            theme="chrome"
+        />
+    </NCollapseItem>
 </template>
-<script>
-import { getSelected, scriptRules, loadScript, setBodySize } from '../utils';
+<script setup lang="ts">
+import { computed, onBeforeMount, Ref, ref, watch } from 'vue';
+import { NCollapseItem, NButton, NInput, NIcon, NTag, NSwitch, NPopover } from 'naive-ui';
+import { VAceEditor } from 'vue3-ace-editor';
 
-export default {
-    data() {
-        return {
-            isMatch: false,
-            name: null,
-            status: 0,
-            enable: true
-        };
-    },
-    watch: {
-        status() {
-            setBodySize(this.status ? 500 : 0);
-        }
-    },
-    computed: {
-        nameError() {
-            let valid = true;
-            try {
-                valid = scriptRules.toPreg(this.name).test(this.validUrl);
-            } catch (e) {
-                console.error(e);
-                valid = false;
-            }
-            return this.name && !valid;
-        }
-    },
-    async created() {
-        const tab = await getSelected();
-        const { domain, path, query, hash } = scriptRules.parseUrl(tab.url);
-        this.validUrl = domain + path + query + hash;
-        this.rule = (await scriptRules.match(this.validUrl)) || {};
-        this.isMatch = this.rule.name;
-        this.name = this.rule.name || domain + path;
-        this.enable = this.rule.name ? !!this.rule.enable : true;
+import SaveAltOutlined from '@vicons/material/SaveAltOutlined';
 
-        await this.initEditor(this.rule);
-    },
-    mounted() {},
-    methods: {
-        async initEditor(rule) {
-            await loadScript('../lib/ace/ace.js');
-            await loadScript('../lib/ace/ext-language_tools.js');
+import { getSelected, loadScript, setBodySize } from '../utils';
+import { Rule, scriptRules } from '../utils/scriptRule';
 
-            this.styleEditor = this.initStyleEditor();
-            this.scriptEditor = this.initScriptEditor();
+const isMatch = ref(false);
+const rule: Ref<Rule | undefined> = ref(undefined);
+const name = ref('');
+const validUrl = ref('');
+const enable = ref(true);
 
-            this.styleEditor.setValue(rule.styles || '');
-            this.scriptEditor.setValue(rule.scripts || '');
-        },
-        setStatus(value) {
-            this.status = value;
-        },
-        setEnable(e) {
-            this.enable = e.target.checked;
-        },
-        save() {
-            const styleValue = this.styleEditor.getValue();
-            const scriptValue = this.scriptEditor.getValue();
-            // 如果preg不设置&没有原来的话那就删除
-            if (this.rule.name && !this.name) {
-                scriptRules.remove(this.rule.name);
-                this.rule = {};
-                this.isMatch = false;
-            }
-            // 没有原来而且没有填内容的话就不保存
-            else if (!this.rule.name && !styleValue && !scriptValue) {
-                return;
-            }
-            // 保存
-            else {
-                if (!scriptRules.toPreg(this.name).test(this.validUrl)) {
-                    return;
-                }
-                scriptRules.set(this.name, {
-                    styles: styleValue,
-                    scripts: scriptValue,
-                    enable: this.enable
-                });
-            }
-            this.status = 0;
-        },
+const allRules: Ref<string> = ref('');
+const allRulesPopupShow = ref(false);
 
-        initStyleEditor() {
-            const inputNode = this.$refs.styleEditor;
-            ace.require('ace/ext/language_tools');
-            var editor = ace.edit(inputNode);
-            editor.setOptions({
-                enableLiveAutocompletion: true //只能补全
-            });
-            editor.setTheme('ace/theme/xcode'); //monokai模式是自动显示补全提示
-            editor.getSession().setMode('ace/mode/css'); //语言
-            return editor;
-        },
-        initScriptEditor() {
-            const inputNode = this.$refs.scriptEditor;
-            ace.require('ace/ext/language_tools');
-            var editor = ace.edit(inputNode);
-            editor.setOptions({
-                enableLiveAutocompletion: true //只能补全
-            });
-            editor.setTheme('ace/theme/monokai'); //monokai模式是自动显示补全提示
-            editor.getSession().setMode('ace/mode/javascript'); //语言
-            return editor;
-        }
+const scriptString = ref('');
+const styleString = ref('');
+
+const nameError = computed(() => {
+    let valid = true;
+    try {
+        valid = scriptRules.toPreg(name.value).test(validUrl.value);
+    } catch (e) {
+        console.error(e);
+        valid = false;
     }
-};
+    return name.value && !valid;
+});
+
+function save() {
+    const styleValue = styleString.value;
+    const scriptValue = scriptString.value;
+
+    // 如果preg不设置&没有原来的话那就删除
+    if (rule.value?.name && !name.value) {
+        scriptRules.remove(rule.value.name);
+        isMatch.value = false;
+        return;
+    }
+    // 没有原来而且没有填内容的话就不保存
+    if (!isMatch.value && !styleValue && !scriptValue) {
+        return;
+    }
+    // // 如果规则不匹配当前页，不保存
+    // if (!scriptRules.toPreg(name.value).test(validUrl.value)) {
+    //     return;
+    // }
+    // 保存
+    scriptRules.set(name.value, {
+        name: name.value,
+        styles: styleValue,
+        scripts: scriptValue,
+        enable: enable.value,
+    });
+}
+
+async function copyConfig() {}
+
+async function handleAllRulesPopupShow() {
+    allRules.value = JSON.stringify(await scriptRules.getAllRules(), null, 4);
+}
+
+function saveAllRules() {
+    scriptRules.setAllRules(JSON.parse(allRules.value || '{}'));
+    allRulesPopupShow.value = false;
+}
+
+onBeforeMount(async () => {
+    const tab = await getSelected();
+    const { host: domain, pathname: path, search: query, hash } = new URL(tab.url!);
+
+    validUrl.value = domain! + path + query + hash;
+
+    rule.value = await scriptRules.match(validUrl.value);
+    // 删除逻辑是删掉name，所以要过滤
+    isMatch.value = !!rule.value?.name;
+
+    name.value = isMatch.value ? rule.value!.name : domain! + path;
+    enable.value = !!rule.value!.enable ?? true;
+    styleString.value = rule.value?.styles ?? '';
+    scriptString.value = rule.value?.scripts ?? '';
+});
 </script>
 <style scoped>
-.content-box {
-    margin: 4px 0 0;
+.switch {
+    margin-top: 1px;
 }
 
-.content-box[data-match] .btn.custom {
-    background: #e7ffed;
-}
-.content-box:not([data-enable]) {
-    filter: brightness(0.95);
-}
 .editor-style:after {
     content: 'CSS';
 }
@@ -160,29 +172,5 @@ export default {
 }
 .editor:hover:after {
     opacity: 0;
-}
-.domain-tips {
-    position: relative;
-}
-.domain-tips:before {
-    content: 'pattern';
-    position: absolute;
-    line-height: 30px;
-    color: #bbb;
-    margin: 0 6px;
-}
-.checkbox-enable {
-    position: absolute;
-    right: 0;
-    top: 5px;
-    width: auto;
-    transform: scale(1.5);
-}
-.input.domain {
-    padding-left: 50px;
-    width: calc(100% - 25px);
-}
-.input.err {
-    border-color: #ff6232;
 }
 </style>

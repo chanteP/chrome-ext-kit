@@ -1,6 +1,15 @@
+<template>
+    <div class="flexbox">
+        <img :src="src" @click="setBodySize(500)" :alt="alt" />
+        <NInput v-model:value="canvasInput" class="flex qr-input" type="textarea" placeholder="url" />
+    </div>
+</template>
+
 <script setup lang="ts">
 import { onMounted, ref, type Ref, computed, watch } from 'vue';
 import QRCode from 'qrcode';
+import { NInput } from 'naive-ui';
+
 import { $, getSelected, insertTemplate, setBodySize } from '../utils';
 
 const src = ref('');
@@ -10,7 +19,7 @@ const canvasInput = ref('');
 async function buildQR() {
     src.value = await getQR(canvasInput.value).catch((e) => (alt.value = e));
 }
-async function getQR(text): Promise<string> {
+async function getQR(text: string): Promise<string> {
     text = text || '';
     return new Promise<string>((res, rej) => {
         QRCode.toDataURL(
@@ -42,33 +51,20 @@ getSelected().then((tab) => {
 });
 </script>
 
-<template>
-    <div class="flexbox">
-        <img class="set-height" :src="src" @click="setBodySize(500)" :alt="alt" />
-        <textarea class="set-height input" v-model="canvasInput"></textarea>
-    </div>
-</template>
-
 <style scoped>
 .flexbox {
-    display: flex;
     flex-wrap: nowrap;
 }
-.set-height {
+.qr-input {
+    flex: 1;
+    margin-left: 4px;
     height: 200px;
+    resize: none;
 }
 
 img {
     display: block;
     width: 200px;
     flex-basis: 200px;
-}
-textarea {
-    flex: 1;
-    margin: 0;
-    padding: 8px 10px;
-    border-left: none;
-    border-radius: 0 3px 3px 0;
-    resize: none;
 }
 </style>
