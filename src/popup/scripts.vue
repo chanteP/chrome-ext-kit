@@ -42,28 +42,30 @@
             </NSwitch>
         </div>
         <v-ace-editor
+            ref="$styleEditor"
             class="editor editor-style"
             v-model:value="styleString"
             lang="css"
-            theme="chrome"
+            theme="xcode"
         />
         <v-ace-editor
+            ref="$scriptEditor"
             class="editor editor-script"
             v-model:value="scriptString"
-            lang="js"
-            theme="chrome"
+            lang="javascript"
+            theme="monokai"
         />
     </NCollapseItem>
 </template>
 <script setup lang="ts">
 import { computed, onBeforeMount, Ref, ref, watch } from 'vue';
 import { NCollapseItem, NButton, NInput, NIcon, NTag, NSwitch, NPopover } from 'naive-ui';
-import { VAceEditor } from 'vue3-ace-editor';
 
 import SaveAltOutlined from '@vicons/material/SaveAltOutlined';
 
 import { getSelected, loadScript, setBodySize } from '../utils';
 import { Rule, scriptRules } from '../utils/scriptRule';
+import { initEditor } from '../utils/editor';
 
 const isMatch = ref(false);
 const rule: Ref<Rule | undefined> = ref(undefined);
@@ -77,6 +79,9 @@ const allRulesPopupShow = ref(false);
 const scriptString = ref('');
 const styleString = ref('');
 
+const $styleEditor: Ref<HTMLElement | null> = ref(null);
+const $scriptEditor: Ref<HTMLElement | null> = ref(null);
+
 const nameError = computed(() => {
     let valid = true;
     try {
@@ -87,6 +92,17 @@ const nameError = computed(() => {
     }
     return name.value && !valid;
 });
+
+function initEditors() {
+    initEditor($styleEditor.value!, styleString.value, {
+        mode: 'ace/mode/css',
+        theme: 'ace/theme/xcode',
+    });
+    initEditor($scriptEditor.value!, scriptString.value, {
+        mode: 'ace/mode/javascript',
+        theme: 'ace/theme/monokai',
+    });
+}
 
 function save() {
     const styleValue = styleString.value;
@@ -137,9 +153,11 @@ onBeforeMount(async () => {
     isMatch.value = !!rule.value?.name;
 
     name.value = isMatch.value ? rule.value!.name : domain! + path;
-    enable.value = !!rule.value!.enable ?? true;
+    enable.value = !!rule.value?.enable ?? true;
     styleString.value = rule.value?.styles ?? '';
     scriptString.value = rule.value?.scripts ?? '';
+
+    initEditors();
 });
 </script>
 <style scoped>
