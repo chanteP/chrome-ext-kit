@@ -23,7 +23,7 @@
   },
   "minimum_chrome_version": "72",
   "background": {
-    "scripts": []
+    "scripts": ["/dist/background.js"]
   },
   "options_ui": {
     "page": "/dist/options.html",
@@ -36,7 +36,10 @@
     "webRequest",
     "webRequestBlocking",
     "storage",
+    "desktopCapture",
     "tabs",
+    "tabCapture",
+    "<all_urls>",
     "*://*/",
     "*://*/*"
   ],

@@ -6,6 +6,9 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "dev": "sh build.sh",
+        "dev:popup": "pack src/popup/index.ts -o dist/popup.js -w --sourcemap inline-cheap-source-map",
+        "dev:background": "pack src/background/background.ts -o dist/background.js -w --sourcemap inline-cheap-source-map",
+        "dev:content": "pack src/content/index.ts -o dist/content.js -w --sourcemap inline-cheap-source-map",
         "build": "sh build.sh production"
     },
     "keywords": [],
@@ -19,7 +22,8 @@
         "naive-ui": "^2.31.0",
         "qrcode": "^1.4.2",
         "vfonts": "^0.1.0",
-        "vue": "3"
+        "vue": "3",
+        "vue3-ace-editor": "^2.2.2"
     },
     "peerDependencies": {
         "np-pack-cli": "^1.0.5"

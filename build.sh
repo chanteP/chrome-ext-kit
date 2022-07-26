@@ -3,23 +3,20 @@ env=$1
 
 rm -rf ./dist/*
 
-npx pack src/popup/index.ts -o dist/popup.js --mode $env
-npx pack src/content/index.ts -o dist/content.js --mode $env
-npx pack src/options.ts -o dist/options.js --mode $env
-npx pack src/background.ts -o dist/background.js --mode $env
-cp src/*.html ./dist
+npx pack src/popup/index.ts -o dist/popup.js --sourcemap inline-cheap-source-map --mode $env
+npx pack src/content/index.ts -o dist/content.js --sourcemap inline-cheap-source-map --mode $env
+npx pack src/options/options.ts -o dist/options.js --sourcemap inline-cheap-source-map --mode $env
+npx pack src/background/background.ts -o dist/background.js --sourcemap inline-cheap-source-map --mode $env
+cp src/**/*.html ./dist
 
-# 编辑器资源
-cp node_modules/ace-builds/src-min/mode-css.js ./dist
-cp node_modules/ace-builds/src-min/mode-javascript.js ./dist
-cp node_modules/ace-builds/src-min/theme-xcode.js ./dist
-cp node_modules/ace-builds/src-min/theme-monokai.js ./dist
+cp -r ./lib/ ./dist/lib
 
 rm -rf ./package/package/*
 mkdir -p ./package/package/
 if [ "$env" = 'production' ]; then
 
   cp -r ./dist/ ./package/package/dist
+  cp -r ./lib/ ./package/package/lib
   cp -r ./images/ ./package/package/images
   cp manifest.json ./package/package/
 
