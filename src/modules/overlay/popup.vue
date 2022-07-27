@@ -5,12 +5,12 @@
                 生效中
             </NTag>
         </template>
-        <Overview v-if="ready" :captureData="captureData" />
+        <Overview v-if="ready" v-model:captureData="captureData" />
     </NCollapseItem>
 </template>
 <script lang="ts" setup>
-import { onBeforeMount, Ref, ref, createVNode, watch, computed, onMounted } from 'vue';
-import { NCollapseItem, NSelect, NSwitch, NButton, NInput, NCheckbox, NTag } from 'naive-ui';
+import { onBeforeMount, Ref, ref } from 'vue';
+import { NCollapseItem, NTag } from 'naive-ui';
 
 import { getSelected, sendRuntimeMessage } from '../../utils';
 import Overview from './overview.vue';

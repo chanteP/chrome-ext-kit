@@ -12,6 +12,10 @@ const props = defineProps<{
     captureData?: CaptureImageData;
 }>();
 
+const emit = defineEmits<{
+    (e: 'update:captureData', captureData?: CaptureImageData): void;
+}>();
+
 const base64 = ref(props.captureData?.base64);
 
 const enable: Ref<boolean> = ref(props.captureData?.enable ?? false);
@@ -63,15 +67,19 @@ function controller(e: KeyboardEvent) {
     const offset = e.altKey ? 10 : 1;
     switch (e.key) {
         case 'ArrowUp':
+            e.preventDefault();
             top.value += offset;
             break;
         case 'ArrowDown':
+            e.preventDefault();
             top.value -= offset;
             break;
         case 'ArrowRight':
+            e.preventDefault();
             left.value -= offset;
             break;
         case 'ArrowLeft':
+            e.preventDefault();
             left.value += offset;
             break;
         default:
@@ -148,6 +156,7 @@ async function cacheImageData() {
           }
         : undefined;
     sendRuntimeMessage('setOverlayCapture', [currentTab.value.id!, syncData]);
+    emit('update:captureData', syncData);
 }
 
 watch(() => base64.value, syncImage, {
