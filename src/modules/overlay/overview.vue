@@ -23,7 +23,8 @@ const enable: Ref<boolean> = ref(props.captureData?.enable ?? false);
 const top = ref(props.captureData?.top ?? 0);
 const left = ref(props.captureData?.left ?? 0);
 
-const scale = ref(props.captureData?.scale ?? 1 / window.devicePixelRatio);
+const scale = ref(props.captureData?.scale ?? 1);
+// const scale = ref(props.captureData?.scale ?? 1 / window.devicePixelRatio);
 const opacity = ref(props.captureData?.opacity ?? 0.3);
 
 // 内部使用
@@ -36,8 +37,14 @@ const currentTabHeight = ref(1);
 const sourceWidth = ref(0);
 const sourceHeight = ref(0);
 
+// 蓝色框等效尺寸，用这个比调整scale更直观一点
+const equivalScale = ref(props.captureData?.equivalScale ?? 1);
+const equivalWidth = ref(0);
+
 // 画布 / 来源 的比例
-const visualScale = computed(() => (sourceWidth.value ? popupMaxWidth / (sourceWidth.value * scale.value) : 1));
+const visualScale = computed(() =>
+    sourceWidth.value ? popupMaxWidth / (sourceWidth.value * scale.value) : 1,
+);
 
 const currentTab: Ref<chrome.tabs.Tab | undefined> = ref(undefined);
 const sourceTab: Ref<chrome.tabs.Tab | undefined> = ref(undefined);
@@ -49,8 +56,8 @@ const floatStyle = computed(() => {
     const transformTop = -top.value * visualScale.value;
     // 很尴尬，因为展开动画，开始的时候canvas是200。但是我又不想处理onresize
     // const displayWidth = ($canvas.value?.clientWidth ?? popupMaxWidth) * visualScale.value;
-    const displayWidth = currentTabWidth.value * visualScale.value;
-    const displayHeight = currentTabHeight.value * visualScale.value;
+    const displayWidth = currentTabWidth.value * visualScale.value * equivalScale.value;
+    const displayHeight = currentTabHeight.value * visualScale.value * equivalScale.value;
 
     return {
         transform: `translate(${transformLeft}px, ${transformTop}px)`,
@@ -102,6 +109,8 @@ function bindDragEvent() {
 function initTabSize() {
     currentTabWidth.value = currentTab.value?.width ?? 100;
     currentTabHeight.value = currentTab.value?.height ?? 100;
+
+    equivalWidth.value = Math.round(currentTabWidth.value * equivalScale.value);
 }
 // 绘制相关 ------------------------------------------------------------------------------------
 function draw(source: CanvasImageSource, width: number, height: number) {
@@ -130,11 +139,12 @@ async function captureTab() {
     }
     const data = await getCaptureMediaData(sourceTab.value);
     base64.value = data.dataUrl;
+    enable.value = true;
     syncImage(data.dataUrl);
 }
 
 function resetPosition() {
-    scale.value = 1 / window.devicePixelRatio;
+    scale.value = 1;
     top.value = 0;
     left.value = 0;
 }
@@ -152,6 +162,7 @@ async function cacheImageData() {
               left: left.value,
               top: top.value,
               scale: scale.value,
+              equivalScale: equivalScale.value,
               opacity: opacity.value,
           }
         : undefined;
@@ -164,8 +175,17 @@ watch(() => base64.value, syncImage, {
 });
 
 watch(
+    () => equivalWidth.value,
+    () => {
+        equivalScale.value = equivalWidth.value / currentTabWidth.value;
+    },
+);
+
+watch(
     () => [sourceTab.value, base64.value, enable.value, top.value, left.value, scale.value, opacity.value],
-    cacheImageData,
+    () => {
+        cacheImageData();
+    },
 );
 
 watch(() => $canvas.value, initCanvas);
@@ -212,8 +232,19 @@ onBeforeUnmount(() => {
                 <template #unchecked>off</template>
             </NSwitch>
         </div>
+        <div class="tool r b">
+            <NInputNumber
+                v-if="currentTab"
+                title="等效宽度"
+                class="ml-4 input-number"
+                v-model:value="equivalWidth"
+                :step="1"
+                size="small"
+            />
+        </div>
         <div class="tool l b info">
             <div>scale{{ scale.toFixed(4) }}x</div>
+            <div>equivalScale{{ equivalScale.toFixed(4) }}x</div>
             <div>visualScale{{ visualScale.toFixed(4) }}x</div>
             <div>current:{{ currentTabWidth }}x{{ currentTabHeight }}</div>
             <div>source:{{ sourceWidth }}x{{ sourceHeight }}</div>
@@ -223,14 +254,14 @@ onBeforeUnmount(() => {
 
     <div class="">
         <div class="suit flexbox">
-            <div class="label">opacity</div>
-            <NSlider class="ml-4 input-slide flex" v-model:value="opacity" :step="0.01" :max="1" :min="0" />
-            <NInputNumber class="ml-4 input-number" v-model:value="opacity" :step="0.1" size="small" />
-        </div>
-        <div class="suit flexbox">
             <div class="label">scale</div>
             <NSlider class="ml-4 input-slide flex" v-model:value="scale" :step="0.01" :max="10" :min="0.1" />
             <NInputNumber class="ml-4 input-number" v-model:value="scale" :step="0.1" size="small" />
+        </div>
+        <div class="suit flexbox">
+            <div class="label">opacity</div>
+            <NSlider class="ml-4 input-slide flex" v-model:value="opacity" :step="0.01" :max="1" :min="0" />
+            <NInputNumber class="ml-4 input-number" v-model:value="opacity" :step="0.1" size="small" />
         </div>
     </div>
 </template>

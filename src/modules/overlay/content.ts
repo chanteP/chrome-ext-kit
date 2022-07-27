@@ -12,6 +12,7 @@ let state: CaptureImageData = {
     top: 0,
     opacity: 0,
     scale: 1,
+    equivalScale: 1,
 };
 
 function updatePosition(left: number, top: number) {
@@ -33,6 +34,7 @@ function buildImage() {
         left: 0;
         z-index: 99999999;
         transform-origin: left top;
+        pointer-events: none;
         opacity: .3;
     `;
     document.body.appendChild(img);
@@ -50,9 +52,9 @@ function updateStyle() {
     // console.log('state', state);
 
     cover.style.opacity = String(state.opacity ?? 0.5);
-    cover.style.transform = `scale(${state.scale})`;
-    cover.style.left = `${state.left}px`;
-    cover.style.top = `${state.top}px`;
+    cover.style.transform = `scale(${state.scale / state.equivalScale})`;
+    cover.style.left = `${state.left / state.equivalScale}px`;
+    cover.style.top = `${state.top / state.equivalScale}px`;
 
     cover.src = state.base64!;
 }
@@ -102,7 +104,7 @@ function updateCoverImage(data?: CaptureImageData) {
 
     const cover = buildImage();
 
-    cover.style.pointerEvents = enable ? '' : 'none';
+    // cover.style.pointerEvents = enable ? '' : 'none';
     cover.style.display = enable ? 'block' : 'none';
 
     if (!enable) {
