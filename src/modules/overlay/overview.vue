@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref, type Ref, computed, watch, onBeforeUnmount } from 'vue';
-import { NSlider, NInputNumber, NSwitch, NButton, NSpace, NCheckbox, NTag } from 'naive-ui';
+import { NSlider, NInputNumber, NSwitch, NButton, NPopover, NCheckbox, NTag } from 'naive-ui';
+
+import InfoOutlined from '@vicons/material/InfoOutlined';
 
 import TabSelector from '../../components/allTabsSelector/tabSelector.vue';
 
@@ -42,9 +44,7 @@ const equivalScale = ref(props.captureData?.equivalScale ?? 1);
 const equivalWidth = ref(0);
 
 // 画布 / 来源 的比例
-const visualScale = computed(() =>
-    sourceWidth.value ? popupMaxWidth / (sourceWidth.value * scale.value) : 1,
-);
+const visualScale = computed(() => (sourceWidth.value ? popupMaxWidth / (sourceWidth.value * scale.value) : 1));
 
 const currentTab: Ref<chrome.tabs.Tab | undefined> = ref(undefined);
 const sourceTab: Ref<chrome.tabs.Tab | undefined> = ref(undefined);
@@ -202,6 +202,25 @@ onBeforeUnmount(() => {
 
 <template>
     <div class="flexbox">
+        <NPopover trigger="hover">
+            <template #trigger>
+                <NButton quaternary circle type="warning">
+                    <template #icon>
+                        <NIcon class="tips">
+                            <InfoOutlined />
+                        </NIcon>
+                    </template>
+                </NButton>
+            </template>
+            <div>
+                <div>使用须知</div>
+                <ol>
+                    <li>只能使用active 状态的标签页，请把目标标签拖出来单独用</li>
+                    <li>如果使用devtools 的divice 模拟，请确认是100%缩放，或者手动调整scale对齐尺寸</li>
+                    <li>可能会有大小差一倍的情况（dpr问题），手动调整谢谢</li>
+                </ol>
+            </div>
+        </NPopover>
         <TabSelector
             class="flex"
             only-actived
@@ -267,6 +286,9 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+.tips {
+    width: 18px;
+}
 .capture-view {
     position: relative;
     background: #333;
