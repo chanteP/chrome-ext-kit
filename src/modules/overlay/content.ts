@@ -59,6 +59,26 @@ function updateStyle() {
     cover.src = state.base64!;
 }
 
+function updateCoverImage(data?: CaptureImageData) {
+    const { base64, enable, opacity, scale, left, top } = data ?? { enable: false };
+    Object.assign(state, data);
+
+    if (!coverImage && !enable) {
+        return;
+    }
+
+    const cover = buildImage();
+
+    // cover.style.pointerEvents = enable ? '' : 'none';
+    cover.style.display = enable ? 'block' : 'none';
+
+    if (!enable) {
+        return;
+    }
+
+    updateStyle();
+}
+
 function bindEvent(node: HTMLElement) {
     bindDragger(
         node,
@@ -85,6 +105,10 @@ function bindEvent(node: HTMLElement) {
             case 'ArrowLeft':
                 state.left -= offset;
                 break;
+            case '\'':
+                state.enable = !state.enable;
+                updateCoverImage(state);
+                break;
             default:
                 return;
         }
@@ -92,26 +116,6 @@ function bindEvent(node: HTMLElement) {
         updatePosition(state.left, state.top);
         updateStyle();
     });
-}
-
-function updateCoverImage(data?: CaptureImageData) {
-    const { base64, enable, opacity, scale, left, top } = data ?? { enable: false };
-    Object.assign(state, data);
-
-    if (!coverImage && !enable) {
-        return;
-    }
-
-    const cover = buildImage();
-
-    // cover.style.pointerEvents = enable ? '' : 'none';
-    cover.style.display = enable ? 'block' : 'none';
-
-    if (!enable) {
-        return;
-    }
-
-    updateStyle();
 }
 
 async function run(tabId: number) {
