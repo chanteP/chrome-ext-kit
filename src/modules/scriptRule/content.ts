@@ -9,13 +9,16 @@ async function run() {
         return;
     }
 
+    document.addEventListener('DOMContentLoaded', function () {
+        rule!.styles && insertStyles(rule!.styles);
+    });
+
     window.addEventListener(
         'load',
         function evalContentScript() {
             // rule!.scripts && chrome.scripting.executeScript({ func: () => eval(rule!.scripts) });
 
             rule!.scripts && eval(rule!.scripts);
-            rule!.styles && insertStyles(rule!.styles);
         },
         {
             once: true,
@@ -28,6 +31,7 @@ run();
 function insertStyles(styles: string) {
     // TODO 使用stylesheets添加
     const styleTag = document.createElement('style');
+    styleTag.dataset.insertStyles = '1';
     styleTag.innerHTML = styles;
     document.body.appendChild(styleTag);
 }
