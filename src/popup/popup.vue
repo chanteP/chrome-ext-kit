@@ -5,6 +5,7 @@ import { NCollapse, NCollapseItem } from 'naive-ui';
 import Qrcode from '../modules/qrCode/popup.vue';
 import Scripts from '../modules/scriptRule/popup.vue';
 import Overlay from '../modules/overlay/popup.vue';
+import Network from '../modules/network/popup.vue';
 import { setBodySize } from '../utils/index';
 
 const expanding = ref([]);
@@ -24,6 +25,7 @@ watch(
     <NCollapse class="fns-list" accordion v-model:expanded-names="expanding">
         <Scripts />
         <Overlay />
+        <Network />
     </NCollapse>
 </template>
 

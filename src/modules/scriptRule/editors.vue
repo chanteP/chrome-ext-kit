@@ -4,7 +4,7 @@
 </template>
 <script setup lang="ts">
 import { computed, onBeforeMount, onMounted, Ref, ref, watch } from 'vue';
-import { initEditor } from './editor';
+import { initEditor } from '../../utils/editor';
 
 const props = withDefaults(
     defineProps<{
