@@ -39,6 +39,7 @@
     "desktopCapture",
     "tabs",
     "tabCapture",
+    "debugger",
     "<all_urls>",
     "*://*/",
     "*://*/*"

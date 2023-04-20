@@ -103,6 +103,7 @@ onMounted(async () => {
         class="selector"
         :options="selectorOptions"
         v-model:value="tabId"
+        :virtual-scroll="false"
         :placeholder="props.placeholder"
         :render-label="renderLabel"
     />

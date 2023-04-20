@@ -85,6 +85,14 @@ export async function getCurrentTab() {
     return chrome.tabs.getCurrent();
 }
 
+export async function getTab(tabId: number) {
+    return new Promise<chrome.tabs.Tab>((res, rej) => {
+        chrome.tabs.get(tabId, (tab) => {
+            res(tab);
+        });
+    });
+}
+
 export async function getAllTabs(): Promise<chrome.tabs.Tab[]> {
     return new Promise((res) => {
         chrome.tabs.query({}, (tabs) => {

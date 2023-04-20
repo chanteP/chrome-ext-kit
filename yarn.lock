@@ -1126,10 +1126,10 @@
   resolved "https://registry.npmjs.org/@types/ace/-/ace-0.0.48.tgz#1cb81872a282da1b49de16976d39e767e5ca435d"
   integrity sha512-esV6hOWiDOZ6d7w5S11iLu6LQsPGe/9RPzhri7gNNLdrK1LFpO9/m7IZhQL6dat0JHICJ7l51zvHAiCgnPLLHA==
 
-"@types/chrome@^0.0.193":
-  version "0.0.193"
-  resolved "https://registry.npmjs.org/@types/chrome/-/chrome-0.0.193.tgz#cd0dc5033f27a243d228aebe566c3ec19ef17e36"
-  integrity sha512-R8C84oqvk8A8C8G1viBd8qLpDr86Y/jwD+KLgzUekbIT9RGds6a9GnlQyg8P7ltnGogTMHkiEQK0ZlcrvTeo3Q==
+"@types/chrome@^0.0.233":
+  version "0.0.233"
+  resolved "https://npm.corp.kuaishou.com/@types/chrome/-/chrome-0.0.233.tgz#c56bb845a376b69f1a8d08c28a5d76283bae72e6"
+  integrity sha512-T3HUW8LDhHfYPbUkOZilhnqX04sZqEFIQO0OIG8byZ7PBIk2jYys1AkNg56UbtKbsh3dABmOniK+0Q3oyo7Sxg==
   dependencies:
     "@types/filesystem" "*"
     "@types/har-format" "*"
@@ -1181,6 +1181,11 @@
   version "7.0.11"
   resolved "https://registry.npmjs.org/@types/json-schema/-/json-schema-7.0.11.tgz#d421b6c527a3037f7c84433fd2c4229e016863d3"
   integrity sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==
+
+"@types/katex@^0.14.0":
+  version "0.14.0"
+  resolved "https://npm.corp.kuaishou.com/@types/katex/-/katex-0.14.0.tgz#b84c0afc3218069a5ad64fe2a95321881021b5fe"
+  integrity sha512-+2FW2CcT0K3P+JMR8YG846bmDwplKUTsWgT2ENwdQ1UdVfRk3GQrh6Mi4sTopy30gI8Uau5CEqHTDZ6YvWIUPA==
 
 "@types/lodash-es@^4.17.6":
   version "4.17.6"
@@ -2219,10 +2224,15 @@ events@^3.2.0:
   resolved "https://registry.npmjs.org/events/-/events-3.3.0.tgz#31a95ad0a924e2d2c419a813aeb2c4e878ea7400"
   integrity sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==
 
-evtd@^0.2.2, evtd@^0.2.3:
+evtd@^0.2.2:
   version "0.2.3"
   resolved "https://registry.npmjs.org/evtd/-/evtd-0.2.3.tgz#185158d533b4440ee831a0fa0cffde16e8bda504"
   integrity sha512-tmiT1YUVqFjTY+BSBOAskL83xNx41iUfpvKP6Gcd/xMHjg3mnER98jXGXJyKnxCG19uPc6EhZiUC+MUyvoqCtw==
+
+evtd@^0.2.4:
+  version "0.2.4"
+  resolved "https://npm.corp.kuaishou.com/evtd/-/evtd-0.2.4.tgz#0aac39ba44d6926e6668948ac27618e0795b9d07"
+  integrity sha512-qaeGN5bx63s/AXgQo8gj6fBkxge+OoLddLniox5qtLAEY5HSnuSlISXVPxnSae1dWblvTh4/HoMIB+mbMsvZzw==
 
 extend@~3.0.2:
   version "3.0.2"
@@ -3069,23 +3079,24 @@ ms@^2.0.0:
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
 
 naive-ui@^2.31.0:
-  version "2.31.0"
-  resolved "https://registry.npmjs.org/naive-ui/-/naive-ui-2.31.0.tgz#39e17d2e639bae418b0a1cc0edf9c92fff89026b"
-  integrity sha512-70PHh1wDo6GP87MquQE4hHxMaISX6y/SWwmAzS86XfK+1gBCpQPcANHrmxsjPncRxk6Zq9CDeW6tzAqw6qUtfA==
+  version "2.34.3"
+  resolved "https://npm.corp.kuaishou.com/naive-ui/-/naive-ui-2.34.3.tgz#96fb0717aedd22b6943b947efc7f5cd58e9d29df"
+  integrity sha512-fUMr0dzb/iGsOTWgoblPVobY5X5dihQ1eam5dA+H74oyLYAvgX4pL96xQFPBLIYqvyRFBAsN85kHN5pLqdtpxA==
   dependencies:
     "@css-render/plugin-bem" "^0.15.10"
     "@css-render/vue3-ssr" "^0.15.10"
+    "@types/katex" "^0.14.0"
     "@types/lodash" "^4.14.181"
     "@types/lodash-es" "^4.17.6"
     async-validator "^4.0.7"
     css-render "^0.15.10"
     date-fns "^2.28.0"
     date-fns-tz "^1.3.3"
-    evtd "^0.2.3"
+    evtd "^0.2.4"
     highlight.js "^11.5.0"
     lodash "^4.17.21"
     lodash-es "^4.17.21"
-    seemly "^0.3.4"
+    seemly "^0.3.6"
     treemate "^0.3.11"
     vdirs "^0.1.8"
     vooks "^0.2.12"
@@ -3777,10 +3788,15 @@ scss-tokenizer@^0.3.0:
     js-base64 "^2.4.3"
     source-map "^0.7.1"
 
-seemly@^0.3.1, seemly@^0.3.4:
+seemly@^0.3.1:
   version "0.3.5"
   resolved "https://registry.npmjs.org/seemly/-/seemly-0.3.5.tgz#7f680d1b8f9ecdfbd6358d62c72b9af10a485b3d"
   integrity sha512-Z0QAytAEpkAeWbQZBQ+zb+9YYn86+AFBdWA4y7FwFtJ+ZcIO55QEVdT0sJ0DxuX8FWD4UTuwaftz/UX+MmHlhw==
+
+seemly@^0.3.6:
+  version "0.3.6"
+  resolved "https://npm.corp.kuaishou.com/seemly/-/seemly-0.3.6.tgz#7ef97e8083dea00804965e2662f572a5df9cb18e"
+  integrity sha512-lEV5VB8BUKTo/AfktXJcy+JeXns26ylbMkIUco8CYREsQijuz4mrXres2Q+vMLdwkuLxJdIPQ8IlCIxLYm71Yw==
 
 "semver@2 || 3 || 4 || 5":
   version "5.7.1"

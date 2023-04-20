@@ -1,35 +1,54 @@
 import { getCurrentTab, getLocalStorage, setLocalStorage } from '../../utils';
 
+export const networkLifeCycle = ['response'] as const;
+export type NetworkLifeCycle = typeof networkLifeCycle[number];
+
 export interface NetworkAPIRule {
     enable: boolean;
     handlerFunctionScript: string;
 }
 
+export type NetworkAPIRuleUnit = {
+    url: string;
+} & Partial<Record<NetworkLifeCycle, NetworkAPIRule>>;
+
 export interface NetworkRule {
     url: string;
-    rules: Record<string, NetworkAPIRule>;
+    rules: Record<string, NetworkAPIRuleUnit>;
+}
+
+export interface NetworkRulesStorage {
+    enable: boolean;
+    rules: Record<string, NetworkRule>;
 }
 
 const storageKey = 'networkRules';
 
 class NetworkRuleHandler {
-    allRules?: NetworkRule[];
+    allRules?: Record<string, NetworkRule>;
+    enable = false;
+
+    async refresh() {
+        const { enable, rules } = await getLocalStorage<NetworkRulesStorage>(storageKey, { enable: false, rules: {} });
+        this.allRules = rules;
+        this.enable = enable;
+    }
 
     async allNetworkRules() {
-        if (this.allRules) {
-            return this.allRules;
+        if (!this.allRules) {
+            await this.refresh();
         }
-        return (this.allRules = await getLocalStorage<NetworkRule[]>(storageKey, []));
+        return this.allRules;
+    }
+
+    setEnable(bool: boolean) {
+        this.enable = bool;
+        this.save();
     }
 
     async getNetworkRule(url: string) {
         await this.allNetworkRules();
-        return this.allRules?.find((rule) => rule.url === url);
-    }
-
-    async hasTabUrl(url: string) {
-        await this.allNetworkRules();
-        return this.allRules?.find((n) => n.url === url);
+        return this.allRules?.[url];
     }
 
     async ensureRule(url: string) {
@@ -42,19 +61,37 @@ class NetworkRuleHandler {
                 url,
                 rules: {},
             };
-            this.allRules?.push(rule);
+            this.allRules![url] = rule;
         }
         return rule;
     }
 
-    async configRuleRequest(url: string, requestUrl: string, requestRule: Partial<NetworkAPIRule>) {
+    getRequestUrlKey(requestUrl: string, baseUrl: string) {
+        const parsedUrlObject = new URL(requestUrl, baseUrl);
+        return `${parsedUrlObject.origin}${parsedUrlObject.pathname}`;
+    }
+
+    async configRuleRequest(
+        url: string,
+        requestUrl: string,
+        requestRule: Partial<NetworkAPIRule>,
+        state: NetworkLifeCycle,
+    ) {
         const rule = await this.ensureRule(url);
 
-        rule.rules[requestUrl] = rule.rules[requestUrl] ?? { enable: true, handlerFunctionScript: '' };
+        const parsedUrl = this.getRequestUrlKey(requestUrl, url);
 
-        Object.assign(rule.rules[requestUrl]!, requestRule);
+        rule.rules[parsedUrl] = rule.rules[parsedUrl] ?? { url: requestUrl };
+        const requestUrlRule = rule.rules[parsedUrl]!;
+        requestUrlRule[state] = requestUrlRule[state] ?? { enable: true, handlerFunctionScript: '' };
 
-        setLocalStorage(storageKey, this.allRules);
+        Object.assign(requestUrlRule[state]!, requestRule);
+
+        this.save();
+    }
+
+    save() {
+        setLocalStorage<NetworkRulesStorage>(storageKey, { enable: this.enable, rules: this.allRules ?? {} });
     }
 }
 
