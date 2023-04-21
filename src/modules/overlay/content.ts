@@ -94,18 +94,22 @@ function bindEvent(node: HTMLElement) {
         const offset = e.altKey ? 10 : 1;
         switch (e.key) {
             case 'ArrowUp':
+                e.preventDefault();
                 state.top += offset;
                 break;
             case 'ArrowDown':
+                e.preventDefault();
                 state.top -= offset;
                 break;
             case 'ArrowRight':
+                e.preventDefault();
                 state.left += offset;
                 break;
             case 'ArrowLeft':
+                e.preventDefault();
                 state.left -= offset;
                 break;
-            case '\'':
+            case "'":
                 state.enable = !state.enable;
                 updateCoverImage(state);
                 break;

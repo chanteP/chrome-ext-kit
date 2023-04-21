@@ -1,12 +1,12 @@
 <template>
     <div>
-        <NInput
+        <!-- <NInput
             v-model:value="currentUrl"
             type="text"
             placeholder="url"
             disabled
             :status="isMatch ? undefined : 'error'"
-        />
+        /> -->
         <div class="request-box">
             <div class="request-info">
                 <NSelect
@@ -15,12 +15,37 @@
                     tag
                     :virtual-scroll="false"
                     :options="requestMenuList"
+                    placeholder="选择/添加接口"
+                    size="small"
                 />
 
                 <template v-if="currentRequestRule">
                     <div class="rule-info">
+                        <NPopover trigger="hover">
+                            <template #trigger>
+                                <NButton quaternary circle type="warning">
+                                    <template #icon>
+                                        <NIcon class="tips">
+                                            <InfoOutlined />
+                                        </NIcon>
+                                    </template>
+                                </NButton>
+                            </template>
+                            <div>
+                                <div>使用须知</div>
+                                <ol>
+                                    <li>
+                                        修改注入的response变量改变response，例如response.body.xxData = {a:1};
+                                        <br />
+                                        response: { code: number; body: returnValue; header:
+                                        {name:string;value:string}[] }
+                                    </li>
+                                </ol>
+                            </div>
+                        </NPopover>
                         <NSelect
                             v-model:value="currentRequestPart"
+                            size="small"
                             :virtual-scroll="false"
                             :options="requestLifeCycleOptions"
                         />
@@ -28,8 +53,8 @@
                             <template #checked>enable</template>
                             <template #unchecked>disabled</template>
                         </NSwitch>
-                        <NButton type="primary" @click="save">save</NButton>
                     </div>
+                    <NButton class="flex" type="primary" block secondary @click="save">save</NButton>
                     <div ref="$scriptEditor" class="editor"></div>
                 </template>
             </div>
@@ -37,8 +62,9 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { onBeforeMount, onMounted, watch, ref, nextTick } from 'vue';
-import { NCollapseItem, NTag, NSelect, NInput, NMenu, NSwitch, NButton } from 'naive-ui';
+import { onBeforeMount, onMounted, watch, ref, nextTick, computed } from 'vue';
+import { NPopover, NIcon, NSelect, NInput, NMenu, NSwitch, NButton } from 'naive-ui';
+
 import {
     networkRuleHandler,
     type NetworkRule,
@@ -46,12 +72,10 @@ import {
     networkLifeCycle,
     type NetworkLifeCycle,
 } from './apiRule';
+import InfoOutlined from '@vicons/material/InfoOutlined';
 
 import { getSelected } from '../../utils';
 import { initEditor } from '../../utils/editor';
-
-import { computed } from '@vue/reactivity';
-import { sleep } from 'seemly';
 
 const currentUrl = ref<string>();
 const currentUrlRule = ref<NetworkRule | undefined>();
@@ -181,11 +205,11 @@ onMounted(init);
 <style scoped>
 .request-box {
     min-height: 200px;
-    background: #ccc;
 }
 
 .rule-info {
     display: flex;
+    align-items: center;
 }
 
 .editor {

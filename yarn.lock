@@ -1128,7 +1128,7 @@
 
 "@types/chrome@^0.0.233":
   version "0.0.233"
-  resolved "https://npm.corp.kuaishou.com/@types/chrome/-/chrome-0.0.233.tgz#c56bb845a376b69f1a8d08c28a5d76283bae72e6"
+  resolved "https://registry.npmjs.org/@types/chrome/-/chrome-0.0.233.tgz#c56bb845a376b69f1a8d08c28a5d76283bae72e6"
   integrity sha512-T3HUW8LDhHfYPbUkOZilhnqX04sZqEFIQO0OIG8byZ7PBIk2jYys1AkNg56UbtKbsh3dABmOniK+0Q3oyo7Sxg==
   dependencies:
     "@types/filesystem" "*"
@@ -1184,7 +1184,7 @@
 
 "@types/katex@^0.14.0":
   version "0.14.0"
-  resolved "https://npm.corp.kuaishou.com/@types/katex/-/katex-0.14.0.tgz#b84c0afc3218069a5ad64fe2a95321881021b5fe"
+  resolved "https://registry.npmjs.org/@types/katex/-/katex-0.14.0.tgz#b84c0afc3218069a5ad64fe2a95321881021b5fe"
   integrity sha512-+2FW2CcT0K3P+JMR8YG846bmDwplKUTsWgT2ENwdQ1UdVfRk3GQrh6Mi4sTopy30gI8Uau5CEqHTDZ6YvWIUPA==
 
 "@types/lodash-es@^4.17.6":
@@ -2231,7 +2231,7 @@ evtd@^0.2.2:
 
 evtd@^0.2.4:
   version "0.2.4"
-  resolved "https://npm.corp.kuaishou.com/evtd/-/evtd-0.2.4.tgz#0aac39ba44d6926e6668948ac27618e0795b9d07"
+  resolved "https://registry.npmjs.org/evtd/-/evtd-0.2.4.tgz#0aac39ba44d6926e6668948ac27618e0795b9d07"
   integrity sha512-qaeGN5bx63s/AXgQo8gj6fBkxge+OoLddLniox5qtLAEY5HSnuSlISXVPxnSae1dWblvTh4/HoMIB+mbMsvZzw==
 
 extend@~3.0.2:
@@ -3080,7 +3080,7 @@ ms@^2.0.0:
 
 naive-ui@^2.31.0:
   version "2.34.3"
-  resolved "https://npm.corp.kuaishou.com/naive-ui/-/naive-ui-2.34.3.tgz#96fb0717aedd22b6943b947efc7f5cd58e9d29df"
+  resolved "https://registry.npmjs.org/naive-ui/-/naive-ui-2.34.3.tgz#96fb0717aedd22b6943b947efc7f5cd58e9d29df"
   integrity sha512-fUMr0dzb/iGsOTWgoblPVobY5X5dihQ1eam5dA+H74oyLYAvgX4pL96xQFPBLIYqvyRFBAsN85kHN5pLqdtpxA==
   dependencies:
     "@css-render/plugin-bem" "^0.15.10"
@@ -3795,7 +3795,7 @@ seemly@^0.3.1:
 
 seemly@^0.3.6:
   version "0.3.6"
-  resolved "https://npm.corp.kuaishou.com/seemly/-/seemly-0.3.6.tgz#7ef97e8083dea00804965e2662f572a5df9cb18e"
+  resolved "https://registry.npmjs.org/seemly/-/seemly-0.3.6.tgz#7ef97e8083dea00804965e2662f572a5df9cb18e"
   integrity sha512-lEV5VB8BUKTo/AfktXJcy+JeXns26ylbMkIUco8CYREsQijuz4mrXres2Q+vMLdwkuLxJdIPQ8IlCIxLYm71Yw==
 
 "semver@2 || 3 || 4 || 5":

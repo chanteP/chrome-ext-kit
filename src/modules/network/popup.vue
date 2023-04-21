@@ -1,8 +1,7 @@
 <template>
     <NCollapseItem title="接口">
         <template #header-extra>
-            <NSwitch class="switch" v-model:value="globalEnable" size="medium" :round="false" @click.native.stop.prevent>
-            </NSwitch>
+            <NSwitch class="switch" v-model:value="globalEnable" size="medium" @click.native.stop.prevent> </NSwitch>
         </template>
         <PopupContent />
     </NCollapseItem>
