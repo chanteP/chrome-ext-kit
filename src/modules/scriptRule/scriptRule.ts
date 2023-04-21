@@ -1,4 +1,4 @@
-import { getLocalStorage, setLocalStorage } from '../../utils';
+import { getLocalStorage, registerStorage, setLocalStorage } from '../../utils';
 
 export interface Rule {
     styles: string;
@@ -62,3 +62,13 @@ class ScriptRule {
     }
 }
 export const scriptRules = new ScriptRule();
+
+registerStorage(storageKey, {
+    onExport: async () => {
+        const data = await getLocalStorage<Record<string, Rule>>(storageKey, {});
+        return data;
+    },
+    onImport: async (data: Record<string, Rule>) => {
+        await setLocalStorage<Record<string, Rule>>(storageKey, data);
+    },
+});

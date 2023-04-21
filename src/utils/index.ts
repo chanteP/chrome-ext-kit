@@ -1,15 +1,16 @@
 export * from './message';
 export * from './dragger';
+export * from './storage';
 
 export function $<T extends HTMLElement>(selector: string): T {
     return document.querySelector(selector) as T;
 }
 
-export function debounce<T extends (...args: any) => any>(fn: T, delay: number = 300) {
+export function debounce<A extends [], T extends (...args: A) => unknown>(fn: T, delay: number = 300) {
     let timer: number | undefined = undefined;
     return (...args: Parameters<T>) => {
         clearTimeout(timer);
-        timer = setTimeout(() => fn(...args), delay);
+        timer = window.setTimeout(() => fn(...args), delay);
     };
 }
 
@@ -115,13 +116,24 @@ export async function getAllTabs(): Promise<chrome.tabs.Tab[]> {
     });
 }
 
-// storage =============
-export function getLocalStorage<T>(name: string, defaultValue?: T): Promise<T> {
-    return new Promise((res) => {
-        chrome.storage.local.get(name, (rs) => res(rs?.[name] ?? defaultValue));
-    });
+export function download(fileName: string, url: string) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    a.click();
 }
 
-export async function setLocalStorage<T>(name: string, value: T) {
-    await chrome.storage.local.set({ [name]: value });
+export async function readFile(file: File): Promise<string> {
+    return new Promise<string>((res, rej) => {
+        const fileReader = new FileReader();
+
+        fileReader.readAsText(file);
+
+        fileReader.onload = function () {
+            const fileContent = fileReader.result;
+            res(fileContent as string);
+        };
+
+        fileReader.onerror = rej;
+    });
 }

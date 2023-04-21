@@ -1,4 +1,4 @@
-import { getCurrentTab, getLocalStorage, setLocalStorage } from '../../utils';
+import { getCurrentTab, getLocalStorage, registerStorage, setLocalStorage } from '../../utils';
 
 export const networkLifeCycle = ['response'] as const;
 export type NetworkLifeCycle = typeof networkLifeCycle[number];
@@ -116,3 +116,13 @@ class NetworkRuleHandler {
 }
 
 export const networkRuleHandler = new NetworkRuleHandler();
+
+registerStorage(storageKey, {
+    onExport: async () => {
+        const data = await getLocalStorage<NetworkRulesStorage>(storageKey, { enable: false, rules: {} });
+        return data;
+    },
+    onImport: async (data: NetworkRulesStorage) => {
+        await setLocalStorage<NetworkRulesStorage>(storageKey, data);
+    },
+});
