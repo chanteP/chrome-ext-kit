@@ -11,13 +11,16 @@ cp src/**/*.html ./dist
 
 cp -r ./lib/ ./dist/lib
 
-rm -rf ./package/package/*
-mkdir -p ./package/package/
+rm -rf ./package/release/*
+rm -rf ./package/release.zip
+mkdir -p ./package/release/
 if [ "$env" = 'production' ]; then
 
-  cp -r ./dist/ ./package/package/dist
-  cp -r ./lib/ ./package/package/lib
-  cp -r ./images/ ./package/package/images
-  cp manifest.json ./package/package/
+  cp -r ./dist/ ./package/release/dist
+  cp -r ./lib/ ./package/release/lib
+  cp -r ./images/ ./package/release/images
+  cp manifest.json ./package/release/
+
+  zip -r ./package/release.zip ./package/release/*
 
 fi

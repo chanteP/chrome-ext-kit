@@ -5,6 +5,20 @@ export function $<T extends HTMLElement>(selector: string): T {
     return document.querySelector(selector) as T;
 }
 
+export function debounce<T extends (...args: any) => any>(fn: T, delay: number = 300) {
+    let timer: number | undefined = undefined;
+    return (...args: Parameters<T>) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn(...args), delay);
+    };
+}
+
+export function sleep(n = 0) {
+    return new Promise<void>((res) => {
+        setTimeout(res, n);
+    });
+}
+
 export async function loadImage(src: string): Promise<HTMLImageElement> {
     return new Promise<HTMLImageElement>((res, rej) => {
         const img = new Image();
@@ -110,12 +124,4 @@ export function getLocalStorage<T>(name: string, defaultValue?: T): Promise<T> {
 
 export async function setLocalStorage<T>(name: string, value: T) {
     await chrome.storage.local.set({ [name]: value });
-}
-
-export function debounce<T extends (...args: any) => any>(fn: T, delay: number = 300) {
-    let timer: number | undefined = undefined;
-    return (...args: Parameters<T>) => {
-        clearTimeout(timer);
-        timer = setTimeout(() => fn(...args), delay);
-    };
 }

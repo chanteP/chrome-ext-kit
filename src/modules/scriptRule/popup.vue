@@ -48,7 +48,7 @@
 </template>
 <script setup lang="ts">
 import { computed, onBeforeMount, onMounted, Ref, ref, watch } from 'vue';
-import { NCollapseItem, NButton, NInput, NIcon, NTag, NSwitch, NPopover } from 'naive-ui';
+import { NCollapseItem, NButton, NInput, NIcon, NTag, NSwitch, NPopover, useMessage } from 'naive-ui';
 
 import SaveAltOutlined from '@vicons/material/SaveAltOutlined';
 
@@ -68,6 +68,8 @@ const allRulesPopupShow = ref(false);
 
 const scriptString = ref('');
 const styleString = ref('');
+
+const message = useMessage();
 
 const $editor: Ref<{ getCodes: () => { script: string; style: string } } | null> = ref(null);
 
@@ -108,6 +110,8 @@ async function save() {
     });
 
     resetStatus();
+
+    message.success('保存成功');
 }
 
 async function handleAllRulesPopupShow() {
@@ -117,6 +121,8 @@ async function handleAllRulesPopupShow() {
 function saveAllRules() {
     scriptRules.setAllRules(JSON.parse(allRules.value || '{}'));
     allRulesPopupShow.value = false;
+
+    message.success('保存成功');
 }
 
 async function resetStatus() {

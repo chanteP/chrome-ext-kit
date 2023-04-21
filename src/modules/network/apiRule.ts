@@ -106,11 +106,13 @@ class NetworkRuleHandler {
         this.save();
     }
 
-    save() {
-        setLocalStorage<NetworkRulesStorage>(storageKey, { enable: this.enable, rules: this.allRules ?? {} });
+    async save() {
+        await setLocalStorage<NetworkRulesStorage>(storageKey, { enable: this.enable, rules: this.allRules ?? {} });
+    }
+
+    async forceSave(rules: string) {
+        await setLocalStorage<NetworkRulesStorage>(storageKey, { enable: this.enable, rules: JSON.parse(rules) ?? {} });
     }
 }
 
 export const networkRuleHandler = new NetworkRuleHandler();
-
-globalThis.nnn = networkRuleHandler;

@@ -1,7 +1,6 @@
 node_modules
 
-package/package/*
-package/*.pem
+package/*
 temp
 
 .DS_Store

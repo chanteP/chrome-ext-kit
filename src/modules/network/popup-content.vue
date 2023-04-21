@@ -9,15 +9,30 @@
         /> -->
         <div class="request-box">
             <div class="request-info">
-                <NSelect
-                    v-model:value="currentRequest"
-                    filterable
-                    tag
-                    :virtual-scroll="false"
-                    :options="requestMenuList"
-                    placeholder="选择/添加接口"
-                    size="small"
-                />
+                <div class="flexbox">
+                    <NSelect
+                        v-model:value="currentRequest"
+                        filterable
+                        tag
+                        :virtual-scroll="false"
+                        :options="requestMenuList"
+                        placeholder="选择/添加接口"
+                    />
+
+                    <NPopover placement="left" trigger="click" @update:show="handleAllRulesPopupShow">
+                        <template #trigger>
+                            <NButton class="ml-4" type="info" strong secondary>
+                                <template #icon>
+                                    <NIcon><SaveAltOutlined /></NIcon>
+                                </template>
+                            </NButton>
+                        </template>
+                        <div class="rules-box flexbox">
+                            <NButton type="info" block secondary @click="saveAllRules">saveAll</NButton>
+                            <NInput class="mt-4 flex" v-model:value="allRules" type="textarea" placeholder="no rules" />
+                        </div>
+                    </NPopover>
+                </div>
 
                 <template v-if="currentRequestRule">
                     <div class="rule-info">
@@ -63,7 +78,7 @@
 </template>
 <script lang="ts" setup>
 import { onBeforeMount, onMounted, watch, ref, nextTick, computed } from 'vue';
-import { NPopover, NIcon, NSelect, NInput, NMenu, NSwitch, NButton } from 'naive-ui';
+import { NPopover, NIcon, NSelect, NInput, NMenu, NSwitch, NButton, useMessage } from 'naive-ui';
 
 import {
     networkRuleHandler,
@@ -73,8 +88,9 @@ import {
     type NetworkLifeCycle,
 } from './apiRule';
 import InfoOutlined from '@vicons/material/InfoOutlined';
+import SaveAltOutlined from '@vicons/material/SaveAltOutlined';
 
-import { getSelected } from '../../utils';
+import { getSelected, sleep } from '../../utils';
 import { initEditor } from '../../utils/editor';
 
 const currentUrl = ref<string>();
@@ -86,7 +102,11 @@ const currentRequestRule = ref<NetworkAPIRule>();
 const currentRequestEnable = ref(true);
 const currentRequestFn = ref('');
 
+const message = useMessage();
+
 const isMatch = computed(() => currentUrl.value === currentUrlRule.value?.url);
+
+const allRules = ref('');
 
 const $scriptEditor = ref<HTMLElement>();
 const scriptEditor = ref<ReturnType<typeof initEditor>>();
@@ -108,8 +128,6 @@ async function update() {
         .map((url) => ({ value: url, label: url }));
 
     currentRequestPart.value = networkLifeCycle[0];
-
-    console.log(requestMenuList.value);
 }
 
 async function addNewRequestRule(url: string) {
@@ -119,7 +137,7 @@ async function addNewRequestRule(url: string) {
 
     await networkRuleHandler.configRuleRequest(currentUrl.value, url, {}, currentRequestPart.value);
     currentRequest.value = url;
-    await nextTick();
+    await sleep(500);
 }
 
 // 重置内容状态
@@ -155,15 +173,28 @@ async function setConfig(options: Partial<NetworkAPIRule>) {
     );
 }
 
-function save() {
+async function save() {
     if (!scriptEditor.value) {
         return;
     }
     const text = scriptEditor.value.getValue();
 
-    setConfig({
+    await setConfig({
         handlerFunctionScript: text,
     });
+
+    message.success('保存成功');
+}
+
+async function handleAllRulesPopupShow() {
+    await networkRuleHandler.refresh();
+    allRules.value = JSON.stringify(networkRuleHandler.allRules, null, 4);
+}
+
+async function saveAllRules() {
+    await networkRuleHandler.forceSave(allRules.value);
+    await update();
+    message.success('保存成功');
 }
 
 watch(
@@ -214,5 +245,11 @@ onMounted(init);
 
 .editor {
     flex: 1;
+}
+
+.rules-box {
+    flex-direction: column;
+    width: 400px;
+    height: 300px;
 }
 </style>

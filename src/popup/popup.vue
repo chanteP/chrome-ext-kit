@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { NCollapse, NCollapseItem } from 'naive-ui';
+import { NCollapse, NMessageProvider } from 'naive-ui';
 
 import Qrcode from '../modules/qrCode/popup.vue';
 import Scripts from '../modules/scriptRule/popup.vue';
@@ -19,14 +19,16 @@ watch(
 </script>
 
 <template>
-    <div class="main-box" :class="{ hidden: expanding.length }">
-        <Qrcode />
-    </div>
-    <NCollapse class="fns-list" accordion v-model:expanded-names="expanding">
-        <Scripts />
-        <Overlay />
-        <Network />
-    </NCollapse>
+    <NMessageProvider>
+        <div class="main-box" :class="{ hidden: expanding.length }">
+            <Qrcode />
+        </div>
+        <NCollapse class="fns-list" accordion v-model:expanded-names="expanding">
+            <Scripts />
+            <Overlay />
+            <Network />
+        </NCollapse>
+    </NMessageProvider>
 </template>
 
 <style>
@@ -37,10 +39,10 @@ watch(
 .flex {
     flex: 1;
 }
-.mt-4{
+.mt-4 {
     margin-top: 4px;
 }
-.ml-4{
+.ml-4 {
     margin-left: 4px;
 }
 </style>
@@ -54,6 +56,11 @@ watch(
     height: 0;
 }
 .fns-list {
-    margin: 16px 0;
+    margin: 8px 0;
+
+    --n-item-margin: 8px 0 0 0 !important;
+}
+.fns-list:deep(.n-collapse-item .n-collapse-item__header) {
+    padding: var(--n-item-margin);
 }
 </style>
