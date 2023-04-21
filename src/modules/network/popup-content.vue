@@ -51,6 +51,7 @@ import { getSelected } from '../../utils';
 import { initEditor } from '../../utils/editor';
 
 import { computed } from '@vue/reactivity';
+import { sleep } from 'seemly';
 
 const currentUrl = ref<string>();
 const currentUrlRule = ref<NetworkRule | undefined>();
@@ -94,6 +95,7 @@ async function addNewRequestRule(url: string) {
 
     await networkRuleHandler.configRuleRequest(currentUrl.value, url, {}, currentRequestPart.value);
     currentRequest.value = url;
+    await nextTick();
 }
 
 // 重置内容状态
@@ -104,10 +106,11 @@ async function selectRequest(value?: string) {
     const requestUrlKey = networkRuleHandler.getRequestUrlKey(value, currentUrl.value!);
     if (!currentUrlRule.value?.rules[requestUrlKey]) {
         await addNewRequestRule(value);
+        // 加完会出现重复menu，罪都在naive-ui
     }
 
     await update();
-    currentRequestRule.value = currentUrlRule.value?.rules[value]?.[currentRequestPart.value];
+    currentRequestRule.value = currentUrlRule.value?.rules[requestUrlKey]?.[currentRequestPart.value];
 
     currentRequestEnable.value = currentRequestRule.value?.enable ?? false;
     currentRequestFn.value = currentRequestRule.value?.handlerFunctionScript ?? '';

@@ -111,3 +111,11 @@ export function getLocalStorage<T>(name: string, defaultValue?: T): Promise<T> {
 export async function setLocalStorage<T>(name: string, value: T) {
     await chrome.storage.local.set({ [name]: value });
 }
+
+export function debounce<T extends (...args: any) => any>(fn: T, delay: number = 300) {
+    let timer: number | undefined = undefined;
+    return (...args: Parameters<T>) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn(...args), delay);
+    };
+}

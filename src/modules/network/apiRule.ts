@@ -46,9 +46,25 @@ class NetworkRuleHandler {
         this.save();
     }
 
-    async getNetworkRule(url: string) {
+    async getNetworkRule(url: string, checkEnable = false) {
         await this.allNetworkRules();
-        return this.allRules?.[url];
+        const rule = this.allRules?.[url];
+        if (rule && checkEnable) {
+            if (Object.keys(rule.rules).length === 0) {
+                return undefined;
+            }
+            if (
+                Object.values(rule.rules).every((requestRule) => {
+                    const isEmpty = networkLifeCycle.every((life) => {
+                        return !requestRule[life]?.enable || !requestRule[life]?.handlerFunctionScript.trim();
+                    });
+                    return isEmpty;
+                })
+            ) {
+                return undefined;
+            }
+        }
+        return rule;
     }
 
     async ensureRule(url: string) {
@@ -96,3 +112,5 @@ class NetworkRuleHandler {
 }
 
 export const networkRuleHandler = new NetworkRuleHandler();
+
+globalThis.nnn = networkRuleHandler;
