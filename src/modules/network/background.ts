@@ -1,4 +1,4 @@
-import { getTab, onRuntimeMessage, sendTabMessage, debounce } from '../../utils';
+import { getTab, onRuntimeMessage, sendTabMessage, debounce, evalScript } from '../../utils';
 import type { CaptureImageData } from '../../types';
 import { type NetworkLifeCycle, type NetworkRule, networkRuleHandler, NetworkAPIRule } from './apiRule';
 
@@ -32,6 +32,8 @@ function hasJSONHeader(headers: { name: string; value: string }[]) {
 async function replaceResponse(requestParams: CDPFetchParam, protoResponse: CDPFetchResponse, script: string) {
     const isResponseJSON = hasJSONHeader(requestParams.responseHeaders);
 
+    const request = requestParams.request;
+
     const response = {
         code: requestParams.responseStatusCode,
         body: protoResponse.base64Encoded ? atob(protoResponse.body) : protoResponse.body,
@@ -46,7 +48,7 @@ async function replaceResponse(requestParams: CDPFetchParam, protoResponse: CDPF
         }
     }
 
-    eval(script);
+    evalScript(script, { request, response });
 
     if (isResponseJSON) {
         response.body = JSON.stringify(response.body);

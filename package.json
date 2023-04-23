@@ -9,7 +9,10 @@
         "dev:popup": "pack src/popup/index.ts -o dist/popup.js -w --sourcemap inline-cheap-source-map",
         "dev:background": "pack src/background/background.ts -o dist/background.js -w --sourcemap inline-cheap-source-map",
         "dev:content": "pack src/content/index.ts -o dist/content.js -w --sourcemap inline-cheap-source-map",
-        "build": "sh build.sh production"
+        "build": "sh build.sh production",
+        "build:popup": "pack src/popup/index.ts -o dist/popup.js",
+        "build:background": "pack src/background/background.ts -o dist/background.js",
+        "build:content": "pack src/content/index.ts -o dist/content.js"
     },
     "keywords": [],
     "author": "",

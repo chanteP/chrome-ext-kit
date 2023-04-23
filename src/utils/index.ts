@@ -2,13 +2,25 @@ export * from './message';
 export * from './dragger';
 export * from './storage';
 
+export function evalScript(script?: string, varObj: Record<string, unknown> = {}) {
+    const varNames: string[] = [];
+    const varData: unknown[] = [];
+
+    Object.entries(varObj).forEach(([name, data]) => {
+        varNames.push(name);
+        varData.push(data);
+    })
+
+    return new Function(...varNames, `"use strict";${script}`)(...varData);
+}
+
 export function $<T extends HTMLElement>(selector: string): T {
     return document.querySelector(selector) as T;
 }
 
-export function debounce<A extends [], T extends (...args: A) => unknown>(fn: T, delay: number = 300) {
+export function debounce<A extends []>(fn: (...args: A) => unknown, delay: number = 300) {
     let timer: number | undefined = undefined;
-    return (...args: Parameters<T>) => {
+    return (...args: A) => {
         clearTimeout(timer);
         timer = window.setTimeout(() => fn(...args), delay);
     };

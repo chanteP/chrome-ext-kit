@@ -1,4 +1,4 @@
-import { $, getSelected } from '../../utils';
+import { $, evalScript, getSelected } from '../../utils';
 import { scriptRules } from './scriptRule';
 
 async function run() {
@@ -18,7 +18,7 @@ async function run() {
         function evalContentScript() {
             // rule!.scripts && chrome.scripting.executeScript({ func: () => eval(rule!.scripts) });
 
-            rule!.scripts && eval(rule!.scripts);
+            rule!.scripts && evalScript(rule!.scripts);
         },
         {
             once: true,
