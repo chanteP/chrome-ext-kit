@@ -1,3 +1,5 @@
+import { currentEnv, ExecEnv } from './chrome';
+
 // storage =============
 export function getLocalStorage<T>(name: string, defaultValue?: T): Promise<T> {
     return new Promise((res) => {
@@ -18,7 +20,9 @@ const storageHandlerStore: Map<string, StorageHandler<any>> = new Map();
 
 export function registerStorage<T>(key: string, handler: StorageHandler<T>) {
     storageHandlerStore.set(key, handler);
-    console.log(`[storage] register module: ${key}`);
+    if(currentEnv !== ExecEnv.Content){
+        console.log(`[storage] register module: ${key}`);
+    }
 }
 
 export async function getStorageExportData() {
