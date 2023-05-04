@@ -22,6 +22,8 @@ const ready = ref(false);
 onBeforeMount(async () => {
     const tab = await getSelected();
 
+    console.log(captureData);
+
     sendRuntimeMessage('getOverlayCapture', [tab.id!], (captureTabData) => {
         captureData.value = captureTabData;
         ready.value = true;

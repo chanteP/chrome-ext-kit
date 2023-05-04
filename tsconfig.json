@@ -26,6 +26,7 @@
         "moduleResolution": "Node",
         "resolveJsonModule": true,
         "useDefineForClassFields": true,
+        "ignoreDeprecations": "5.0",
 
         // Required in Vue projects
         "jsx": "preserve",

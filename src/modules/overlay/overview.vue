@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, type Ref, computed, watch, onBeforeUnmount } from 'vue';
-import { NSlider, NInputNumber, NSwitch, NButton, NPopover, NCheckbox, NTag } from 'naive-ui';
+import { NSlider, NInputNumber, NSwitch, NButton, NPopover, NCheckbox, NIcon, NTag } from 'naive-ui';
 
 import InfoOutlined from '@vicons/material/InfoOutlined';
 

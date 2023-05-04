@@ -1,4 +1,4 @@
-import { onRuntimeMessage, sendTabMessage } from '../utils';
+import { evalScriptInTab, onRuntimeMessage, sendTabMessage } from '../utils';
 
 // chrome.tabs.onUpdated.addListener((tab) => {
 //     console.log('create tab', tab.id)
@@ -8,4 +8,8 @@ import { onRuntimeMessage, sendTabMessage } from '../utils';
 onRuntimeMessage('tabInfo', (data, sender, response) => {
     response(sender.tab?.id);
 });
+
+// onRuntimeMessage('execScript', ([script, VO], sender, response) => {
+//     evalScriptInTab(sender.tab?.id!, script, VO);
+// });
 

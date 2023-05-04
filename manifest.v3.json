@@ -16,6 +16,7 @@
             "js": [
                 "/dist/content.js"
             ],
+            "world": "ISOLATED",
             "run_at": "document_start",
             "all_frames": true
         }
@@ -39,9 +40,15 @@
         "webRequest",
         "storage",
         "scripting",
-        "tabs"
+        "activeTab",
+        "tabs",
+        "chrome://*/*",
+        "chrome-extension://*/*"
     ],
-    "host_permissions": [],
+    "host_permissions": [
+        "chrome://*/*",
+        "chrome-extension://*/*"
+    ],
     "optional_host_permissions": [
         "*://*/*"
     ],

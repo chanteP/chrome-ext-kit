@@ -1,24 +1,29 @@
-import { $, evalScript, getSelected } from '../../utils';
+import { $, evalScript, evalScriptInTab, getCurrentTab, sendRuntimeMessage } from '../../utils';
 import { scriptRules } from './scriptRule';
 
-async function run() {
-    const { hostname: domain, pathname: path, search: query, hash } = location;
-    let rule = await scriptRules.match(domain + path + query + hash);
+async function run(tabId: number) {
+    const { hostname: domain, port, pathname: path, search: query, hash } = location;
+    let rule = await scriptRules.match(`${domain}${port ? `:${port}` : ''}${path}${query}${hash}`);
 
     if (!rule?.enable) {
         return;
     }
 
+    // const tab = await getCurrentTab();
+
     document.addEventListener('DOMContentLoaded', function () {
         rule!.styles && insertStyles(rule!.styles);
     });
 
+    // rule!.scripts && sendRuntimeMessage('execScript', [rule!.scripts]);
+
     window.addEventListener(
         'load',
-        function evalContentScript() {
+        async function evalContentScript() {
             // rule!.scripts && chrome.scripting.executeScript({ func: () => eval(rule!.scripts) });
-
+            // rule!.scripts && sendRuntimeMessage('execScript', [rule!.scripts]);
             rule!.scripts && evalScript(rule!.scripts);
+            // insertScript(rule!.scripts);
         },
         {
             once: true,
@@ -26,7 +31,9 @@ async function run() {
     );
 }
 
-run();
+sendRuntimeMessage('tabInfo', [], (tabId) => {
+    run(tabId);
+});
 
 function insertStyles(styles: string) {
     // TODO 使用stylesheets添加

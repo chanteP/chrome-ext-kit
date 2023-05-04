@@ -1,4 +1,3 @@
-
 export function evalScript(script?: string, varObj: Record<string, unknown> = {}) {
     const varNames: string[] = [];
     const varData: unknown[] = [];
@@ -6,7 +5,7 @@ export function evalScript(script?: string, varObj: Record<string, unknown> = {}
     Object.entries(varObj).forEach(([name, data]) => {
         varNames.push(name);
         varData.push(data);
-    })
+    });
 
     return new Function(...varNames, `"use strict";${script}`)(...varData);
 }
@@ -19,7 +18,7 @@ export function debounce<A extends []>(fn: (...args: A) => unknown, delay: numbe
     let timer: number | undefined = undefined;
     return (...args: A) => {
         clearTimeout(timer);
-        timer = window.setTimeout(() => fn(...args), delay);
+        timer = setTimeout(() => fn(...args), delay) as unknown as number;
     };
 }
 

@@ -2,6 +2,7 @@ import type { CaptureImageData } from '../types';
 
 export interface MessageChannel {
     tabInfo: () => number;
+    execScript: (script?: string, VO?: Record<string, any>) => void;
 
     setOverlayCapture: (currentTabId: number, data?: CaptureImageData) => void;
     getOverlayCapture: (currentTabId: number) => CaptureImageData | undefined;

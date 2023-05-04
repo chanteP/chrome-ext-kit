@@ -1,16 +1,30 @@
-
+import { $ } from './tools';
 // tabs =====================================================
 
 export async function getSelected(): Promise<chrome.tabs.Tab> {
     return new Promise<chrome.tabs.Tab>((res) => {
-        chrome.tabs.getSelected(function (tab) {
-            res(tab);
+        // chrome.tabs.getSelected(function (tab) {
+        //     res(tab);
+        // });
+
+        chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+            res(tabs[0]!);
         });
     });
 }
 
 export async function getCurrentTab() {
-    return chrome.tabs.getCurrent();
+    // return chrome.tabs.getCurrent();
+
+    return new Promise<chrome.tabs.Tab>((res) => {
+        // chrome.tabs.getSelected(function (tab) {
+        //     res(tab);
+        // });
+
+        chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+            res(tabs[0]!);
+        });
+    });
 }
 
 export async function getTab(tabId: number) {
@@ -47,7 +61,6 @@ export async function getAllTabs(): Promise<chrome.tabs.Tab[]> {
 //     });
 // }
 
-
 // popup ========================================================
 
 export const popupMaxWidth = 500;
@@ -64,21 +77,39 @@ export function setBodySize(maxWidth: boolean, maxHeight?: boolean) {
 // env ========================================================
 
 export enum ExecEnv {
-    Background=0,
-    Popup=1,
-    Content=2,
+    Background = 0,
+    Popup = 1,
+    Content = 2,
 }
 
-function getCurrentEnv(): ExecEnv{
-    if(!chrome.extension.getBackgroundPage){
+function getCurrentEnv(): ExecEnv {
+    if (!chrome.extension.getBackgroundPage) {
         return ExecEnv.Content;
     }
     if (chrome.extension.getBackgroundPage() === window) {
         return ExecEnv.Background;
-    } 
+    }
     return ExecEnv.Popup;
-} 
+}
 
 export const currentEnv = getCurrentEnv();
 
+export function evalScriptInTab(tabId: number, script?: string, varObj: Record<string, unknown> = {}) {
+    const varNames: string[] = [];
+    const varData: unknown[] = [];
 
+    Object.entries(varObj).forEach(([name, data]) => {
+        varNames.push(name);
+        varData.push(data);
+    });
+
+    chrome.scripting.executeScript({
+        target: { tabId },
+        args: [script, varNames, varData],
+        func: (script?: string, varNames: string[] = [], varData: unknown[] = []) => {
+            console.log('eeee=====', script, varNames, varData);
+
+            return Function(...varNames, `"use strict";${script}`)(...varData);
+        },
+    });
+}
