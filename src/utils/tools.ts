@@ -14,9 +14,9 @@ export function $<T extends HTMLElement>(selector: string): T {
     return document.querySelector(selector) as T;
 }
 
-export function debounce<A extends []>(fn: (...args: A) => unknown, delay: number = 300) {
+export function debounce<T extends (...args: any[]) => void>(fn: T, delay: number = 300) {
     let timer: number | undefined = undefined;
-    return (...args: A) => {
+    return (...args: Parameters<T>) => {
         clearTimeout(timer);
         timer = setTimeout(() => fn(...args), delay) as unknown as number;
     };
