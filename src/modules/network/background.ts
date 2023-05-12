@@ -166,7 +166,7 @@ async function updateHttpWatcher(tab: chrome.tabs.Tab) {
     let rules = await networkRuleHandler.getNetworkRule(tab.url, true);
     console.log('network rules', tab.id, tab.url, rules);
 
-    if (currentDebugTab === tab.id) {
+    if (rules || currentDebugTab === tab.id) {
         detachDebug();
     }
 
