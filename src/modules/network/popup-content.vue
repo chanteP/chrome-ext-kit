@@ -1,12 +1,11 @@
 <template>
     <div>
-        <!-- <NInput
-            v-model:value="currentUrl"
-            type="text"
-            placeholder="url"
-            disabled
-            :status="isMatch ? undefined : 'error'"
-        /> -->
+        <div class="flexbox">
+            <NInput v-model:value="currentUrl" type="text" placeholder="url" :status="isMatch ? '' : 'error'" />
+            <NButton class="flex ml-4" :type="isMatch ? 'primary' : 'error'" secondary block @click="saveUrl">
+                save
+            </NButton>
+        </div>
         <div class="request-box">
             <div class="request-info">
                 <div class="flexbox">
@@ -90,9 +89,10 @@ import {
 import InfoOutlined from '@vicons/material/InfoOutlined';
 import SaveAltOutlined from '@vicons/material/SaveAltOutlined';
 
-import { getSelected, sleep } from '../../utils';
+import { getSelected, matchUrl, sleep } from '../../utils';
 import { initEditor } from '../../utils/editor';
 
+const tabUrl = ref<string>();
 const currentUrl = ref<string>();
 const currentUrlRule = ref<NetworkRule | undefined>();
 const requestMenuList = ref<{ value: string; label: string }[]>([{ label: '123123', value: '3213123' }]);
@@ -104,7 +104,7 @@ const currentRequestFn = ref('');
 
 const message = useMessage();
 
-const isMatch = computed(() => currentUrl.value === currentUrlRule.value?.url);
+const isMatch = computed(() => tabUrl.value && matchUrl(tabUrl.value, currentUrl.value ?? ''));
 
 const allRules = ref('');
 
@@ -117,12 +117,14 @@ const currentRequestPart = ref<NetworkLifeCycle>(networkLifeCycle[0]);
 async function init() {
     const tab = await getSelected();
     currentUrl.value = tab.url;
+    tabUrl.value = tab.url;
     await update();
 }
 
 // 刷新当前配置的状态，无脑刷
 async function update() {
     currentUrlRule.value = await networkRuleHandler.getNetworkRule(currentUrl.value ?? '');
+    currentUrl.value = currentUrlRule.value?.url ?? currentUrl.value;
     requestMenuList.value = Object.values(currentUrlRule.value?.rules ?? {})
         .map((d) => d.url)
         .map((url) => ({ value: url, label: url }));
@@ -195,6 +197,13 @@ async function saveAllRules() {
     await networkRuleHandler.forceSave(allRules.value);
     await update();
     message.success('保存成功');
+}
+
+async function saveUrl() {
+    if (currentUrlRule.value) {
+        networkRuleHandler.switchUrlName(currentUrlRule.value, currentUrl.value!);
+        message.success('保存成功');
+    }
 }
 
 watch(

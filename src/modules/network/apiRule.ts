@@ -1,7 +1,7 @@
-import { getCurrentTab, getLocalStorage, registerStorage, setLocalStorage } from '../../utils';
+import { getCurrentTab, getLocalStorage, matchUrlPattern, registerStorage, setLocalStorage } from '../../utils';
 
 export const networkLifeCycle = ['response'] as const;
-export type NetworkLifeCycle = typeof networkLifeCycle[number];
+export type NetworkLifeCycle = (typeof networkLifeCycle)[number];
 
 export interface NetworkAPIRule {
     enable: boolean;
@@ -48,7 +48,12 @@ class NetworkRuleHandler {
 
     async getNetworkRule(url: string, checkEnable = false) {
         await this.allNetworkRules();
-        const rule = this.allRules?.[url];
+        // const rule = this.allRules?.[url];
+
+        if (!this.allRules) {
+            return;
+        }
+        const rule = matchUrlPattern(url, Object.values(this.allRules), (item) => item.url);
         if (rule && checkEnable) {
             if (Object.keys(rule.rules).length === 0) {
                 return undefined;
@@ -65,6 +70,16 @@ class NetworkRuleHandler {
             }
         }
         return rule;
+    }
+
+    switchUrlName(rule: NetworkRule, urlPattern: string) {
+        if (!this.allRules) {
+            return;
+        }
+
+        delete this.allRules[rule.url];
+        this.allRules[urlPattern] = rule;
+        rule.url = urlPattern;
     }
 
     async ensureRule(url: string) {

@@ -86,3 +86,26 @@ export async function readFile(file: File): Promise<string> {
         fileReader.onerror = rej;
     });
 }
+
+function toPreg(urlPattern: string) {
+    return new RegExp(String.raw`^${urlPattern}`);
+}
+/**
+ * url 通配符匹配使用
+ */
+export function matchUrl(url: string, pattern: string) {
+    return toPreg(pattern).test(url);
+}
+
+export function matchUrlPattern<T>(url: string, itemList: T[], getUrl: (item: T) => string): T | undefined {
+    let match: T | undefined = undefined;
+    itemList
+        .map((item) => getUrl(item))
+        .forEach((urlPattern, index) => {
+            // 匹配而且比之前match的更长
+            if (matchUrl(url, urlPattern) && (!match || urlPattern.length > getUrl(match).length)) {
+                match = itemList[index];
+            }
+        });
+    return match;
+}

@@ -3,10 +3,10 @@ env=$1
 
 rm -rf ./dist/*
 
-npx pack src/popup/index.ts -o dist/popup.js --sourcemap inline-cheap-source-map --mode $env
-npx pack src/content/index.ts -o dist/content.js --sourcemap inline-cheap-source-map --mode $env
-npx pack src/options/options.ts -o dist/options.js --sourcemap inline-cheap-source-map --mode $env
-npx pack src/background/background.ts -o dist/background.js --sourcemap inline-cheap-source-map --mode $env
+pack src/popup/index.ts -o dist/popup.js --sourcemap inline-cheap-source-map --mode $env
+pack src/content/index.ts -o dist/content.js --sourcemap inline-cheap-source-map --mode $env
+pack src/options/options.ts -o dist/options.js --sourcemap inline-cheap-source-map --mode $env
+pack src/background/background.ts -o dist/background.js --sourcemap inline-cheap-source-map --mode $env
 cp src/**/*.html ./dist
 
 cp -r ./lib/ ./dist/lib
