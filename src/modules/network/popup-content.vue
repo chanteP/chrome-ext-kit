@@ -5,33 +5,30 @@
             <NButton class="flex ml-4" :type="isMatch ? 'primary' : 'error'" secondary block @click="saveUrl">
                 save
             </NButton>
+            <NPopover placement="left" trigger="click" @update:show="handleAllRulesPopupShow">
+                <template #trigger>
+                    <NButton class="ml-4" type="info" strong secondary>
+                        <template #icon>
+                            <NIcon><SaveAltOutlined /></NIcon>
+                        </template>
+                    </NButton>
+                </template>
+                <div class="rules-box flexbox">
+                    <NButton type="info" block secondary @click="saveAllRules">saveAll</NButton>
+                    <NInput class="mt-4 flex" v-model:value="allRules" type="textarea" placeholder="no rules" />
+                </div>
+            </NPopover>
         </div>
         <div class="request-box">
-            <div class="request-info">
-                <div class="flexbox">
-                    <NSelect
-                        v-model:value="currentRequest"
-                        filterable
-                        tag
-                        :virtual-scroll="false"
-                        :options="requestMenuList"
-                        placeholder="选择/添加接口"
-                    />
-
-                    <NPopover placement="left" trigger="click" @update:show="handleAllRulesPopupShow">
-                        <template #trigger>
-                            <NButton class="ml-4" type="info" strong secondary>
-                                <template #icon>
-                                    <NIcon><SaveAltOutlined /></NIcon>
-                                </template>
-                            </NButton>
-                        </template>
-                        <div class="rules-box flexbox">
-                            <NButton type="info" block secondary @click="saveAllRules">saveAll</NButton>
-                            <NInput class="mt-4 flex" v-model:value="allRules" type="textarea" placeholder="no rules" />
-                        </div>
-                    </NPopover>
-                </div>
+            <div class="request-info mt-4">
+                <NSelect
+                    v-model:value="currentRequest"
+                    filterable
+                    tag
+                    :virtual-scroll="false"
+                    :options="requestMenuList"
+                    placeholder="选择/添加接口"
+                />
 
                 <template v-if="currentRequestRule">
                     <div class="rule-info">
