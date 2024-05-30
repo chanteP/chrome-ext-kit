@@ -5,7 +5,7 @@ import { NCollapse, NButton, NIcon, useMessage } from 'naive-ui';
 import Qrcode from '../modules/qrCode/popup.vue';
 import Scripts from '../modules/scriptRule/popup.vue';
 import Overlay from '../modules/overlay/popup.vue';
-import Network from '../modules/network/popup.vue';
+// import Network from '../modules/network/popup.vue';
 
 import { setBodySize, getStorageExportData, setStorageImportData, download, readFile } from '../utils';
 
@@ -53,7 +53,7 @@ watch(
         <NCollapse class="fns-list" accordion v-model:expanded-names="expanding">
             <Scripts />
             <Overlay />
-            <Network />
+            <!-- <Network /> -->
         </NCollapse>
         <div class="fn-box">
             <NButton class="ml-4" strong secondary size="small" title="导入配置">

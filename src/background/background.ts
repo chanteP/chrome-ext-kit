@@ -1,3 +1,3 @@
 import './common';
 import '../modules/overlay/background';
-import '../modules/network/background';
+// import '../modules/network/background';

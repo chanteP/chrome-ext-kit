@@ -103,7 +103,7 @@ function bindDragEvent() {
             top.value = -t / visualScale.value;
         },
     );
-    window.addEventListener('keyup', controller);
+    window.addEventListener('keydown', controller);
 }
 
 function initTabSize() {

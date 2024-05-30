@@ -90,7 +90,7 @@ function bindEvent(node: HTMLElement) {
         },
     );
 
-    window.addEventListener('keyup', (e) => {
+    window.addEventListener('keydown', (e) => {
         const offset = e.altKey ? 10 : 1;
         switch (e.key) {
             case 'ArrowUp':

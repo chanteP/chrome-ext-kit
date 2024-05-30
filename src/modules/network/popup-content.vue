@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="flexbox">
-            <NInput v-model:value="currentUrl" type="text" placeholder="url" :status="isMatch ? '' : 'error'" />
+            <NInput v-model:value="currentUrl" type="text" placeholder="url" :status="isMatch ? 'success' : 'error'" />
             <NButton class="flex ml-4" :type="isMatch ? 'primary' : 'error'" secondary block @click="saveUrl">
                 save
             </NButton>
@@ -46,7 +46,11 @@
                                 <div>使用须知</div>
                                 <ol>
                                     <li>
-                                        修改注入的response变量改变response，例如response.body.xxData = {a:1};
+                                        修改注入的response变量改变response，例如
+                                        <br />
+                                        response.body.xxData = {a:1};
+                                        <br />
+                                        response.code = 206;
                                         <br />
                                         response: { code: number; body: returnValue; header:
                                         {name:string;value:string}[] }
@@ -130,7 +134,7 @@ async function update() {
 }
 
 async function addNewRequestRule(url: string) {
-    if (!currentUrlRule.value || !currentUrl.value || !url) {
+    if (!currentUrl.value || !url) {
         return;
     }
 

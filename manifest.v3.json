@@ -42,8 +42,12 @@
         "scripting",
         "activeTab",
         "tabs",
+        "<all_urls>",
         "chrome://*/*",
         "chrome-extension://*/*"
+    ],
+    "optional_permissions": [
+        "activeTab"
     ],
     "host_permissions": [
         "chrome://*/*",

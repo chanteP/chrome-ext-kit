@@ -53,6 +53,7 @@ class NetworkRuleHandler {
         if (!this.allRules) {
             return;
         }
+
         const rule = matchUrlPattern(url, Object.values(this.allRules), (item) => item.url);
         if (rule && checkEnable) {
             if (Object.keys(rule.rules).length === 0) {

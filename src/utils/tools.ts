@@ -88,7 +88,8 @@ export async function readFile(file: File): Promise<string> {
 }
 
 function toPreg(urlPattern: string) {
-    return new RegExp(String.raw`^${urlPattern}`);
+    // 这里有些特殊字符可能需要处理，例如?之类的
+    return new RegExp(String.raw`^${urlPattern}`.replace(/([\?])/g, '\\$1'));
 }
 /**
  * url 通配符匹配使用
