@@ -1,3 +1,4 @@
+import type { HfInference } from '@huggingface/inference';
 import type { CaptureImageData } from '../types';
 
 export interface MessageChannel {
@@ -7,6 +8,9 @@ export interface MessageChannel {
     setOverlayCapture: (currentTabId: number, data?: CaptureImageData) => void;
     getOverlayCapture: (currentTabId: number) => CaptureImageData | undefined;
     updateOverlayCapture: (data?: CaptureImageData) => void;
+
+    queryHuggingFace: <K extends keyof HfInference>(api: K, params?: any) => { api: K; params?: any; result: any };
+    getLastHuggingFaceData: <K extends keyof HfInference>() => { api: K; params?: any; result: any };
 }
 
 export type MessageChannels = keyof MessageChannel;
