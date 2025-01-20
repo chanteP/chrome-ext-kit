@@ -2,7 +2,8 @@ import { onRuntimeMessage, sendTabMessage } from '../../utils';
 
 import { HfInference } from '@huggingface/inference';
 
-const HF_TOKEN = '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';
+// https://huggingface.co/settings/tokens
+const HF_TOKEN = '';
 const inference = new HfInference(HF_TOKEN);
 
 let lastResult: { api: keyof HfInference; params: any; result: any } | undefined = undefined;
