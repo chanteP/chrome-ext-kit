@@ -1,6 +1,6 @@
 {
     "name": "万能的插件",
-    "version": "0.2.0",
+    "version": "0.1.0",
     "manifest_version": 3,
     "description": "",
     "action": {
@@ -16,7 +16,6 @@
             "js": [
                 "/dist/content.js"
             ],
-            "world": "ISOLATED",
             "run_at": "document_start",
             "all_frames": true
         }
@@ -26,35 +25,38 @@
         "48": "/images/icon.png",
         "128": "/images/icon.png"
     },
-    "minimum_chrome_version": "72",
+    "minimum_chrome_version": "88",
     "background": {
         "service_worker": "/dist/background.js"
     },
     "options_ui": {
-        "page": "/dist/options.html"
+        "page": "/dist/options.html",
+        "open_in_tab": false
+    },
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self'"
     },
     "permissions": [
         "contextMenus",
         "bookmarks",
-        "desktopCapture",
-        "webRequest",
         "storage",
-        "scripting",
-        "activeTab",
+        "desktopCapture",
         "tabs",
-        "<all_urls>",
-        "chrome://*/*",
-        "chrome-extension://*/*"
-    ],
-    "optional_permissions": [
-        "activeTab"
+        "tabCapture",
+        "debugger"
     ],
     "host_permissions": [
-        "chrome://*/*",
-        "chrome-extension://*/*"
-    ],
-    "optional_host_permissions": [
+        "file:///*",
+        "<all_urls>",
+        "*://*/",
         "*://*/*"
     ],
-    "web_accessible_resources": []
+    "web_accessible_resources": [
+        {
+            "resources": [],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ]
 }

@@ -47,7 +47,7 @@
     </NCollapseItem>
 </template>
 <script setup lang="ts">
-import { computed, onBeforeMount, onMounted, Ref, ref, watch } from 'vue';
+import { computed, onBeforeMount, onMounted, type Ref, ref, watch } from 'vue';
 import { NCollapseItem, NButton, NInput, NIcon, NTag, NSwitch, NPopover, useMessage } from 'naive-ui';
 
 import SaveAltOutlined from '@vicons/material/SaveAltOutlined';
@@ -55,7 +55,7 @@ import SaveAltOutlined from '@vicons/material/SaveAltOutlined';
 import Editors from './editors.vue';
 
 import { getSelected } from '../../utils';
-import { Rule, scriptRules } from './scriptRule';
+import { type Rule, scriptRules } from './scriptRule';
 
 const isMatch = ref(false);
 const rule: Ref<Rule | undefined> = ref(undefined);

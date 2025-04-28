@@ -12,7 +12,6 @@ let state: CaptureImageData = {
     top: 0,
     opacity: 0,
     scale: 1,
-    equivalScale: 1,
 };
 
 function updatePosition(left: number, top: number) {
@@ -37,7 +36,7 @@ function buildImage() {
         pointer-events: none;
         opacity: .3;
     `;
-    document.body.appendChild(img);
+    document.body?.appendChild(img);
     bindEvent(img);
 
     coverImage = img;
@@ -52,9 +51,9 @@ function updateStyle() {
     // console.log('state', state);
 
     cover.style.opacity = String(state.opacity ?? 0.5);
-    cover.style.transform = `scale(${state.scale / state.equivalScale})`;
-    cover.style.left = `${state.left / state.equivalScale}px`;
-    cover.style.top = `${state.top / state.equivalScale}px`;
+    cover.style.transform = `scale(${state.scale})`;
+    cover.style.left = `${state.left}px`;
+    cover.style.top = `${state.top}px`;
 
     cover.src = state.base64!;
 }
@@ -132,12 +131,13 @@ async function run(tabId: number) {
     });
 }
 
-sendRuntimeMessage('tabInfo', [], (tabId) => {
-    run(tabId);
+window.addEventListener('DOMContentLoaded', () => {
+    sendRuntimeMessage('tabInfo', [], (tabId) => {
+        run(tabId);
+    });
 });
 
 onRuntimeMessage('updateOverlayCapture', ([data]) => {
     // const { base64, enable } = data ?? {};
-    // console.log('updateOverlayCapture', base64?.length, enable);
     updateCoverImage(data);
 });

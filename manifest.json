@@ -1,9 +1,9 @@
 {
     "name": "万能的插件",
     "version": "0.1.0",
-    "manifest_version": 2,
+    "manifest_version": 3,
     "description": "",
-    "browser_action": {
+    "action": {
       "default_icon": "/images/icon.png",
       "default_popup": "/dist/popup.html",
       "default_title": ""
@@ -21,30 +21,35 @@
       "48": "/images/icon.png",
       "128": "/images/icon.png"
     },
-    "minimum_chrome_version": "72",
+    "minimum_chrome_version": "88",
     "background": {
-      "scripts": ["/dist/background.js"]
+      "service_worker": "/dist/background.js"
     },
     "options_ui": {
       "page": "/dist/options.html",
-      "chrome_style": true
+      "open_in_tab": false
     },
-    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+    "content_security_policy": {
+      "extension_pages": "script-src 'self'; object-src 'self'"
+    },
     "permissions": [
       "contextMenus",
       "bookmarks",
-      "webRequest",
-      "webRequestBlocking",
       "storage",
       "desktopCapture",
       "tabs",
       "tabCapture",
-      "debugger",
+      "debugger"
+    ],
+    "host_permissions": [
       "file:///*",
       "<all_urls>",
       "*://*/",
       "*://*/*"
     ],
-    "web_accessible_resources": []
+    "web_accessible_resources": [{
+      "resources": [],
+      "matches": ["<all_urls>"]
+    }]
   }
   

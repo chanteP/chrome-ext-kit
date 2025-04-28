@@ -13,11 +13,13 @@ const props = withDefaults(
     defineProps<{
         value?: chrome.tabs.Tab;
         onlyActived?: boolean;
+        showActivedOnly?: boolean;
         placeholder?: string;
         defaultTabId?: number;
     }>(),
     {
         onlyActived: false,
+        showActivedOnly: false,
         placeholder: '选择标签页',
     },
 );
@@ -61,7 +63,7 @@ async function initTabOptions() {
             type: 'group',
             label: `窗口${windowId}`,
             key: windowId,
-            children: windowGroup.map((tab) => {
+            children: windowGroup.filter(tab => props.showActivedOnly ? tab.active : true).map((tab) => {
                 return {
                     tab,
                     label: tab.title,

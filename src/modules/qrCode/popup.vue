@@ -42,6 +42,7 @@ async function getQR(text: string): Promise<string> {
 watch(
     () => canvasInput.value,
     () => {
+        console.log('canvasInput.value', canvasInput.value);
         buildQR();
     },
 );

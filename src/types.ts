@@ -6,5 +6,4 @@ export interface CaptureImageData {
     top: number;
     scale: number;
     opacity: number;
-    equivalScale: number;
 }

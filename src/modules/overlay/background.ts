@@ -16,6 +16,7 @@ onRuntimeMessage('setOverlayCapture', (data, sender, response) => {
         overlayMap.set(currentTabId, captureData);
         response();
     }
+
     // console.log('sendTabMessage updateOverlayCapture', currentTabId, overlayMap.get(currentTabId));
     if (new URL(sender.origin ?? '').protocol === 'chrome-extension:') {
         sendTabMessage('updateOverlayCapture', currentTabId, [overlayMap.get(currentTabId)]);
